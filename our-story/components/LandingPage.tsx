@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
 
 interface LandingPageProps {
   onOpenScrapbook: () => void;
@@ -48,11 +47,6 @@ export default function LandingPage({ onOpenScrapbook, coverImage }: LandingPage
               maxWidth: '280px',
             }}
           >
-            <ImageWithFallback
-              src={coverImage}
-              alt="Cover memory"
-              className="w-full h-72 object-cover mb-3"
-            />
             <p
               className="text-center text-gray-700"
               style={{ fontFamily: 'Kalam, cursive', fontSize: '0.9rem' }}
