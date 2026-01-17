@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import {useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
 const Chuddette = (props: any) => {
   const ref = useRef<any>(null);
-  const { scene } = useGLTF("/frog.glb");
+  const { scene } = useGLTF("/dog_bed.glb");
 
 
 
@@ -16,4 +16,4 @@ const Chuddette = (props: any) => {
 
 export default Chuddette;
 
-useGLTF.preload("/frog.glb");
+useGLTF.preload("/dog_bed.glb");
