@@ -1,39 +1,55 @@
-import React from "react";
+import { useEffect, useRef } from "react";
+import { useGLTF } from "@react-three/drei";
 
-type RomanticTableProps = {
-  /** Optional className for responsive sizing / rounding */
-  className?: string;
-  /** Optional inline styles */
-  style?: React.CSSProperties;
-  /** Override iframe title for accessibility */
-  title?: string;
+const RomanticTable = (props: any) => {
+  const ref = useRef<any>(null);
+  const { scene } = useGLTF("/round_table.glb");
+
+  useEffect(() => {
+    scene.traverse((obj: any) => {
+      if (!obj.isMesh) return;
+
+      const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+
+      mats.forEach((mat: any) => {
+        if (!mat) return;
+
+        // console.log("mesh:", obj.name, "mat:", mat.name, "type:", mat.type);
+
+        const name = (mat.name || "").toLowerCase();
+
+        // Icing
+        if (name.includes("cream")) {
+          if (mat.color) mat.color.set("#dcbcc4"); // light pink
+          mat.roughness = 0.35;
+          mat.metalness = 0.0;
+        }
+
+        // Cake base
+        if (name.includes("cake")) {
+          if (mat.color) mat.color.set("#FFAEBC"); // cake-ish tan
+          mat.roughness = 0.8;
+          mat.metalness = 0.0;
+        }
+
+        // Strawberries
+        if (name.includes("strawberry")) {
+          if (mat.color) mat.color.set("#dc4a54");
+          mat.roughness = 0.5;
+        }
+
+        mat.needsUpdate = true;
+      });
+    });
+  }, [scene]);
+
+  return (
+    <group ref={ref} {...props}>
+      <primitive object={scene} />
+    </group>
+  );
 };
 
-export default function RomanticTable({
-  className,
-  style,
-  title = "Romantic Diner Table",
-}: RomanticTableProps) {
-  return (
-    <div className={className} style={{ width: "100%", ...style }}>
-      <div className="sketchfab-embed-wrapper" style={{ width: "100%" }}>
-        <iframe
-          allowFullScreen
-          allow="autoplay; fullscreen; xr-spatial-tracking"
-          xr-spatial-tracking="true"
-          execution-while-out-of-viewport="true"
-          execution-while-not-rendered="true"
-          web-share="true"
-          src="https://sketchfab.com/models/dfe49bf5f1eb409f8ac85707a980ce8b/embed?preload=1&transparent=1"
-          style={{
-            width: "100%",
-            height: "100%",
-            minHeight: 500,
-            border: 0,
-            borderRadius: 16,
-          }}
-        />
-      </div>
-    </div>
-  );
-}
+export default RomanticTable;
+
+useGLTF.preload("/round_table.glb");
