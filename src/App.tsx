@@ -19,6 +19,7 @@ import { Fireworks } from "./components/Fireworks";
 import { BirthdayCard } from "./components/BirthdayCard";
 
 import "./App.css";
+import HeartCake from "./models/HeartCake";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -302,7 +303,7 @@ function AnimatedScene({
         ))}
       </group>
       <group ref={cakeGroup}>
-        <Cake />
+        <HeartCake />
       </group>
       <group ref={candleGroup}>
         <Candle isLit={candleLit} scale={0.25} position={[0, 1.1, 0]} />
