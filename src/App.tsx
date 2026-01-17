@@ -21,6 +21,8 @@ import { BirthdayCard } from "./components/BirthdayCard";
 import "./App.css";
 import { Leva, useControls } from 'leva'
 import RomanticTable from "./models/RomanticTable";
+import Butters from "./models/Butter";
+import Chair from "./models/Chair";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -119,6 +121,7 @@ function AnimatedScene({
 }: AnimatedSceneProps) {
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
+  const buttersGroup = useRef<Group>(null);
   const candleGroup = useRef<Group>(null);
   const animationStartRef = useRef<number | null>(null);
   const hasPrimedRef = useRef(false);
@@ -262,44 +265,49 @@ function AnimatedScene({
       }
     }
   });
-  const controls = useControls(
-  //   'Heart cake', {
-  //   positionX: {
-  //     value: 2.5,
-  //     min: -10,
-  //     max: 10
-  //   },
-  //   positionY: {
-  //     value: 2.5,
-  //     min: -10,
-  //     max: 10
-  //   }, 
-  //   positionZ: {
-  //     value: 2.5,
-  //     min: -10,
-  //     max: 10
-  //   },
-  //   rotationX: {
-  //     value: 0,
-  //     min: -10,
-  //     max: 10
-  //   },
-  //   rotationY: {
-  //     value: 0,
-  //     min: -10,
-  //     max: 10
-  //   },
-  //   rotationZ: {
-  //     value: 0,
-  //     min: -10,
-  //     max: 10
-  //   },
-  //   scale: {
-  //     value: 1,
-  //     min: 0.1,
-  //     max: 10
-  //   }
-  // },
+  const buttersControls = useControls(
+  
+  'butters', {
+    positionX: {
+      value: 0,
+      min: -10,
+      max: 10
+    },
+    positionY: {
+      value: 0,
+      min: -10,
+      max: 10
+    }, 
+    positionZ: {
+      value: 0,
+      min: -10,
+      max: 10
+    },
+    rotationX: {
+      value: 0,
+      min: -10,
+      max: 10
+    },
+    rotationY: {
+      value: 0,
+      min: -10,
+      max: 10
+    },
+    rotationZ: {
+      value: 0,
+      min: -10,
+      max: 10
+    },
+    scale: {
+      value: 1,
+      min: 0.1,
+      max: 10
+    } 
+  }
+)
+
+const tableControls = useControls(
+  
   'table', {
     positionX: {
       value: 0,
@@ -382,6 +390,19 @@ function AnimatedScene({
             onToggle={onToggleCard}
           />
         ))}
+      </group>
+      <group ref={buttersGroup}>
+        <Chair
+          position={[buttersControls.positionX, buttersControls.positionY, buttersControls.positionZ]}
+          rotation={[buttersControls.rotationX, buttersControls.rotationY, buttersControls.rotationZ]}
+          scale={buttersControls.scale}
+        />
+        <Butters
+          position={[buttersControls.positionX, buttersControls.positionY, buttersControls.positionZ]}
+          rotation={[buttersControls.rotationX, buttersControls.rotationY, buttersControls.rotationZ]}
+          scale={buttersControls.scale}
+        />
+
       </group>
       <group ref={cakeGroup}>
         <HeartCake 
