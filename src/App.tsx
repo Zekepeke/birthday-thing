@@ -24,6 +24,7 @@ import { Leva, useControls } from 'leva'
 import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Chair from "./models/Chair";
+import DogBed from "./models/DogBed";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -443,6 +444,11 @@ function AnimatedScene({
           position={[-4.4, -1.4, 4.4]}
           rotation={[0, 2, 0]}
           scale={1.3}
+        />
+        <DogBed
+          position={[-2.4, -3, 10]}
+          rotation={[0, 3.6, 0]}
+          scale={4.5}
         />
       </group>
       <group ref={cakeGroup}>
