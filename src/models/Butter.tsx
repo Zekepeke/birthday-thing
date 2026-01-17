@@ -1,9 +1,20 @@
-import React from 'react'
+import { useEffect, useRef } from "react";
+import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
 
-const Butter = () => {
+const Butters = (props: any) => {
+  const ref = useRef<any>(null);
+  const { scene } = useGLTF("/butters.glb");
+
+
+
   return (
-    <div>Butter</div>
-  )
-}
+    <group ref={ref} {...props}>
+      <primitive object={scene} />
+    </group>
+  );
+};
 
-export default Butter
+export default Butters;
+
+useGLTF.preload("/butters.glb");

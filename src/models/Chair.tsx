@@ -1,9 +1,20 @@
-import React from 'react'
+import { useEffect, useRef } from "react";
+import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
 
-const Chair = () => {
+const Chair = (props: any) => {
+  const ref = useRef<any>(null);
+  const { scene } = useGLTF("/antique_chair.glb");
+
+
+
   return (
-    <div>Chair</div>
-  )
-}
+    <group ref={ref} {...props}>
+      <primitive object={scene} />
+    </group>
+  );
+};
 
-export default Chair
+export default Chair;
+
+useGLTF.preload("/antique_chair.glb");

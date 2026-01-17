@@ -1,4 +1,3 @@
-// src/models/RomanticTable.tsx
 import { useEffect, useMemo, useRef } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -7,11 +6,6 @@ const RomanticTable = (props: any) => {
   const ref = useRef<any>(null);
   const { scene } = useGLTF("/round_table.glb");
 
-  // ✅ Made-up texture names (put these in /public/textures/)
-  // public/textures/round_table_body_albedo.jpg
-  // public/textures/round_table_body_roughness.jpg
-  // public/textures/round_table_cloth_albedo.jpg
-  // public/textures/round_table_cloth_roughness.jpg
   const [
     bodyAlbedo,
     clothAlbedo,
@@ -45,7 +39,6 @@ const RomanticTable = (props: any) => {
 
         const name = (mat.name || "").toLowerCase();
 
-        // Your modelviewer screenshot shows:
         // (0) Body
         // (1) Cloth
         const isBody = name.includes("body");
