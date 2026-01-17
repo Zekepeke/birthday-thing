@@ -2,7 +2,6 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
 import {
   Suspense,
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -20,7 +19,7 @@ import { Fireworks } from "./components/Fireworks";
 import { BirthdayCard } from "./components/BirthdayCard";
 
 import "./App.css";
-import { Leva, useControls } from 'leva'
+// import { Leva, useControls } from 'leva'
 import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Chair from "./models/Chair";
@@ -43,7 +42,9 @@ type AnimatedSceneProps = {
   cards: ReadonlyArray<BirthdayCardConfig>;
   activeCardId: string | null;
   onToggleCard: (id: string) => void;
+  onCakePress?: () => void; 
 };
+
 
 const CAKE_START_Y = 10;
 const CAKE_END_Y = 0;
@@ -121,6 +122,7 @@ function AnimatedScene({
   cards,
   activeCardId,
   onToggleCard,
+  onCakePress,
 }: AnimatedSceneProps) {
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
@@ -268,125 +270,44 @@ function AnimatedScene({
       }
     }
   });
-  const genControls = useControls('general', {
-    positionX: {
-      value: 0,
-      min: -10,
-      max: 10 
-    },
-    positionY: {
-      value: 0,
-      min: -10,
-      max: 10 
-    }, 
-    positionZ: {
-      value: 0,
-      min: -10,
-      max: 10 
-    },
-    rotationX: {
-      value: 0,
-      min: -10,
-      max: 10 
-    },
-    rotationY: {
-      value: 0,
-      min: -10,
-      max: 10 
-    },
-    rotationZ: {
-      value: 0,
-      min: -10,
-      max: 10 
-    },
-    scale: {
-      value: 1,
-      min: 0.1,
-      max: 10
-    },
-  }
-)
-//   const buttersControls = useControls(
-  
-//   'butters', {
+//   const genControls = useControls('general', {
 //     positionX: {
 //       value: 0,
 //       min: -10,
-//       max: 10
+//       max: 10 
 //     },
 //     positionY: {
 //       value: 0,
 //       min: -10,
-//       max: 10
+//       max: 10 
 //     }, 
 //     positionZ: {
 //       value: 0,
 //       min: -10,
-//       max: 10
+//       max: 10 
 //     },
 //     rotationX: {
 //       value: 0,
 //       min: -10,
-//       max: 10
+//       max: 10 
 //     },
 //     rotationY: {
 //       value: 0,
 //       min: -10,
-//       max: 10
+//       max: 10 
 //     },
 //     rotationZ: {
 //       value: 0,
 //       min: -10,
-//       max: 10
+//       max: 10 
 //     },
 //     scale: {
 //       value: 1,
 //       min: 0.1,
 //       max: 10
-//     } 
+//     },
 //   }
-// )
-
-// const tableControls = useControls(
-  
-//   'table', {
-//     positionX: {
-//       value: 0,
-//       min: -10,
-//       max: 10
-//     },
-//     positionY: {
-//       value: 0,
-//       min: -10,
-//       max: 10
-//     }, 
-//     positionZ: {
-//       value: 0,
-//       min: -10,
-//       max: 10
-//     },
-//     rotationX: {
-//       value: 0,
-//       min: -10,
-//       max: 10
-//     },
-//     rotationY: {
-//       value: 0,
-//       min: -10,
-//       max: 10
-//     },
-//     rotationZ: {
-//       value: 0,
-//       min: -10,
-//       max: 10
-//     },
-//     scale: {
-//       value: 1,
-//       min: 0.1,
-//       max: 10
-//     } 
-//   }
-// )
+// );
 
   return (
     <>
@@ -457,7 +378,13 @@ function AnimatedScene({
           scale={1.9}
         />
       </group>
-      <group ref={cakeGroup}>
+      <group
+        ref={cakeGroup}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          onCakePress?.();
+        }}
+      >
         <HeartCake 
           position={[0.7, -0.3, 0.1]}
           rotation={[0, 0, 0]}
@@ -572,17 +499,16 @@ export default function App() {
     } catch {
       // browser might block until user gesture; ignore
     }
-  },
-  []
-);
+  },[]
+  );
 
-const toggleMusic = useCallback(() => {
-  setMusicOn((prev) => {
-    const next = !prev;
-    void syncMusic(next);
-    return next;
-  });
-}, [syncMusic]);
+  const toggleMusic = useCallback(() => {
+    setMusicOn((prev) => {
+      const next = !prev;
+      void syncMusic(next);
+      return next;
+    });
+  }, [syncMusic]);
 
   const playBackgroundMusic = useCallback(() => {
   if (!musicOn) return;
@@ -595,7 +521,7 @@ const toggleMusic = useCallback(() => {
   void audio.play().catch(() => {
     // ignore play errors (browser might block)
   });
-}, [musicOn]);
+  }, [musicOn]);
 
   const typingComplete = currentLineIndex >= TYPED_LINES.length;
   const typedLines = useMemo(() => {
@@ -621,6 +547,19 @@ const toggleMusic = useCallback(() => {
     Math.min(cursorLineIndex, typedLines.length - 1),
     0
   );
+
+  const startExperience = useCallback(() => {
+    if (hasStarted) return;
+    playBackgroundMusic();
+    setHasStarted(true);
+  }, [hasStarted, playBackgroundMusic]);
+
+  const blowOutCandle = useCallback(() => {
+    if (!hasAnimationCompleted || !isCandleLit) return;
+    setIsCandleLit(false);
+    setFireworksActive(true);
+  }, [hasAnimationCompleted, isCandleLit]);
+
 
   useEffect(() => {
     if (!hasStarted) {
@@ -678,26 +617,74 @@ const toggleMusic = useCallback(() => {
     return () => window.clearInterval(handle);
   }, []);
 
+  // useEffect(() => {
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (event.code !== "Space" && event.key !== " ") {
+  //       return;
+  //     }
+  //     event.preventDefault();
+  //     if (!hasStarted) {
+  //       playBackgroundMusic();
+  //       setHasStarted(true);
+  //       return;
+  //     }
+  //     if (hasAnimationCompleted && isCandleLit) {
+  //       setIsCandleLit(false);
+  //       setFireworksActive(true);
+  //     }
+  //   };
+
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   return () => window.removeEventListener("keydown", handleKeyDown);
+  // }, [hasStarted, hasAnimationCompleted, isCandleLit, playBackgroundMusic]);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code !== "Space" && event.key !== " ") {
-        return;
-      }
+      if (event.code !== "Space" && event.key !== " ") return;
+
       event.preventDefault();
+
       if (!hasStarted) {
-        playBackgroundMusic();
-        setHasStarted(true);
+        startExperience();
         return;
       }
-      if (hasAnimationCompleted && isCandleLit) {
-        setIsCandleLit(false);
-        setFireworksActive(true);
-      }
+
+      // Space blows out candle once animation is done
+      blowOutCandle();
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [hasStarted, hasAnimationCompleted, isCandleLit, playBackgroundMusic]);
+    }, [hasStarted, startExperience, blowOutCandle]);
+
+
+  useEffect(() => {
+    const handlePointerStart = (event: Event) => {
+      // Only used for the "press space to start" part:
+      if (hasStarted) return;
+
+      const target = event.target as HTMLElement | null;
+
+      // Ignore taps on UI controls (like your Music toggle)
+      if (target?.closest("button, a, input, textarea, select, [data-ignore-start]")) {
+        return;
+      }
+
+      startExperience();
+    };
+
+
+
+    window.addEventListener("pointerdown", handlePointerStart);
+    // fallback for older iOS edge cases
+    window.addEventListener("touchstart", handlePointerStart);
+
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerStart);
+      window.removeEventListener("touchstart", handlePointerStart);
+    };
+  }, [hasStarted, startExperience]);
+
 
   const handleCardToggle = useCallback((id: string) => {
     setActiveCardId((current) => (current === id ? null : id));
@@ -731,7 +718,7 @@ const toggleMusic = useCallback(() => {
         </div>
       </div>
       {hasAnimationCompleted && isCandleLit && (
-        <div className="hint-overlay">press space to blow out the candle</div>
+        <div className="hint-overlay">press space or tap the cake to blow out the candle</div>
       )}
       <Canvas
         gl={{ alpha: true }}
@@ -750,9 +737,10 @@ const toggleMusic = useCallback(() => {
             cards={BIRTHDAY_CARDS}
             activeCardId={activeCardId}
             onToggleCard={handleCardToggle}
+            onCakePress={blowOutCandle}
           />
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
-          <directionalLight intensity={1} position={[20, 10, -9]} color={[1, 0.9, 0.95]}/>
+          <directionalLight intensity={1.3} position={[20, 10, -9]} color={[1, 0.9, 0.95]}/>
           <Environment
             files={["/black.jpg"]}
             backgroundRotation={[0, 3.3, 0]}
