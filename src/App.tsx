@@ -2,6 +2,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
 import {
   Suspense,
+  use,
   useCallback,
   useEffect,
   useMemo,
@@ -13,7 +14,7 @@ import { Vector3 } from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Candle } from "./models/candle";
 import HeartCake from "./models/HeartCake";
-import { Table } from "./models/table";
+import Chudette from "./models/Chuddette";
 import { PictureFrame } from "./models/pictureFrame";
 import { Fireworks } from "./components/Fireworks";
 import { BirthdayCard } from "./components/BirthdayCard";
@@ -265,6 +266,44 @@ function AnimatedScene({
       }
     }
   });
+  const frogControl = useControls('frog', {
+    positionX: {
+      value: 0,
+      min: -10,
+      max: 10 
+    },
+    positionY: {
+      value: 0,
+      min: -10,
+      max: 10 
+    }, 
+    positionZ: {
+      value: 0,
+      min: -10,
+      max: 10 
+    },
+    rotationX: {
+      value: 0,
+      min: -10,
+      max: 10 
+    },
+    rotationY: {
+      value: 0,
+      min: -10,
+      max: 10 
+    },
+    rotationZ: {
+      value: 0,
+      min: -10,
+      max: 10 
+    },
+    scale: {
+      value: 1,
+      min: 0.1,
+      max: 10
+    },
+  }
+)
 //   const buttersControls = useControls(
   
 //   'butters', {
@@ -354,6 +393,11 @@ function AnimatedScene({
         <RomanticTable 
           position={[-1.4, -10, 0.2]}
           scale={4.4}
+          />
+        <Chudette 
+          position={[frogControl.positionX, frogControl.positionY, frogControl.positionZ]}
+          rotation={[frogControl.rotationX, frogControl.rotationY, frogControl.rotationZ]}
+          scale={frogControl.scale}
           />
         <PictureFrame
           image="/frame2.jpg"
