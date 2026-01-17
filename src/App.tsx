@@ -25,6 +25,7 @@ import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Chair from "./models/Chair";
 import DogBed from "./models/DogBed";
+import Zuki from "./models/Zuki";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -450,6 +451,11 @@ function AnimatedScene({
           rotation={[0, 3.6, 0]}
           scale={4.5}
         />
+        <Zuki
+          position={[-2, -1.6, 9.6]}
+          rotation={[0, 2.4, 0]}
+          scale={1.9}
+        />
       </group>
       <group ref={cakeGroup}>
         <HeartCake 
@@ -746,7 +752,7 @@ const toggleMusic = useCallback(() => {
             onToggleCard={handleCardToggle}
           />
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
-          <directionalLight intensity={1} position={[34, 10, -9]} color={[1, 0.9, 0.95]}/>
+          <directionalLight intensity={1} position={[20, 10, -9]} color={[1, 0.9, 0.95]}/>
           <Environment
             files={["/black.jpg"]}
             backgroundRotation={[0, 3.3, 0]}
