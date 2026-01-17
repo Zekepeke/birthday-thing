@@ -1,22 +1,20 @@
-import { useRef, useEffect } from 'react';
-import { useGLTF } from '@react-three/drei';
+import { useRef } from "react";
+import { useGLTF } from "@react-three/drei";
 
-import heartCakeScene from '../../public/heartcake.glb';
+const HeartCake = (props: any) => {
+  const heartCakeRef = useRef<any>(null);
 
-const HeartCake = ({...props}) => {
-    const heartCakeRef = useRef(null);
-   const { scene  } = useGLTF(heartCakeScene);
+  // use URL path for public assets
+  const { scene } = useGLTF("/heartcake.glb");
 
-  
   return (
-    <mesh 
-    {...props}
-    ref ={heartCakeRef}
-    >
-        <primitive object = {scene} />
-    </mesh>
-  )
-}
+    <group {...props} ref={heartCakeRef}>
+      <primitive object={scene} />
+    </group>
+  );
+};
 
+export default HeartCake;
 
-export default HeartCake
+// optional: prefetch
+useGLTF.preload("/heartcake.glb");

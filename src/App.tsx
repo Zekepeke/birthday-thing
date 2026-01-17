@@ -12,14 +12,14 @@ import type { Group } from "three";
 import { Vector3 } from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Candle } from "./models/candle";
-import { Cake } from "./models/cake";
+import HeartCake from "./models/HeartCake";
 import { Table } from "./models/table";
 import { PictureFrame } from "./models/pictureFrame";
 import { Fireworks } from "./components/Fireworks";
 import { BirthdayCard } from "./components/BirthdayCard";
 
 import "./App.css";
-import HeartCake from "./models/HeartCake";
+import { Leva, useControls } from 'leva'
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
