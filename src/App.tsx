@@ -81,13 +81,13 @@ const BACKGROUND_FADE_START = Math.max(
 );
 
 const TYPED_LINES = [
-  "> tina",
+  "> Amanda",
   "...",
   "> today is your birthday",
   "...",
-  "> so i made you this computer program",
+  "> so i made you something special",
   "...",
-  "٩(◕‿◕)۶ ٩(◕‿◕)۶ ٩(◕‿◕)۶"
+  "˚ʚ♡ɞ˚ ˚ʚ♡ɞ˚ ˚ʚ♡ɞ˚ ˚ʚ♡ɞ˚",
 ];
 const TYPED_CHAR_DELAY = 100;
 const POST_TYPING_SCENE_DELAY = 1000;
@@ -488,7 +488,7 @@ export default function App() {
   const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const audio = new Audio("/music.mp3");
+    const audio = new Audio("/in_da_club.mp3");
     audio.loop = true;
     audio.preload = "auto";
     backgroundAudioRef.current = audio;
@@ -657,16 +657,14 @@ export default function App() {
       >
         <Suspense fallback={null}>
           <AnimatedScene
-            // isPlaying={isScenePlaying}
-            isPlaying={true}
+            isPlaying={isScenePlaying}
             candleLit={isCandleLit}
             onBackgroundFadeChange={setBackgroundOpacity}
             onEnvironmentProgressChange={setEnvironmentProgress}
             onAnimationComplete={() => setHasAnimationCompleted(true)}
             cards={BIRTHDAY_CARDS}
             activeCardId={activeCardId}
-            // onToggleCard={handleCardToggle}
-            onToggleCard={() => {}}
+            onToggleCard={handleCardToggle}
           />
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
           <directionalLight intensity={1} position={[34, 10, -9]} color={[1, 0.9, 0.95]}/>
