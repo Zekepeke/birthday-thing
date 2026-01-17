@@ -20,6 +20,7 @@ import { BirthdayCard } from "./components/BirthdayCard";
 
 import "./App.css";
 import { Leva, useControls } from 'leva'
+import RomanticTable from "./models/RomanticTable";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -341,7 +342,11 @@ function AnimatedScene({
   return (
     <>
       <group ref={tableGroup}>
-        <Table />
+        {/* <Table /> */}
+        <RomanticTable 
+          position={[-1.4, -10, 0.2]}
+          scale={4.4}
+          />
         <PictureFrame
           image="/frame2.jpg"
           position={[0, 0.735, 3]}

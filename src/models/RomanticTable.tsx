@@ -1,9 +1,38 @@
-import { useEffect, useRef } from "react";
-import { useGLTF } from "@react-three/drei";
+// src/models/RomanticTable.tsx
+import { useEffect, useMemo, useRef } from "react";
+import { useGLTF, useTexture } from "@react-three/drei";
+import * as THREE from "three";
 
 const RomanticTable = (props: any) => {
   const ref = useRef<any>(null);
   const { scene } = useGLTF("/round_table.glb");
+
+  // ✅ Made-up texture names (put these in /public/textures/)
+  // public/textures/round_table_body_albedo.jpg
+  // public/textures/round_table_body_roughness.jpg
+  // public/textures/round_table_cloth_albedo.jpg
+  // public/textures/round_table_cloth_roughness.jpg
+  const [
+    bodyAlbedo,
+    clothAlbedo,
+  ] = useTexture([
+    "/textures/round_table_body_albedo.jpg",
+    "/textures/round_table_cloth_albedo.jpg",
+  ]);
+
+  // Texture housekeeping
+  useMemo(() => {
+    bodyAlbedo.colorSpace = THREE.SRGBColorSpace;
+    clothAlbedo.colorSpace = THREE.SRGBColorSpace;
+
+
+    // Optional: reduce blur if you want crisper textures
+    [bodyAlbedo, clothAlbedo].forEach((t) => {
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      t.flipY = false; // usually correct for glTF-loaded textures
+      t.needsUpdate = true;
+    });
+  }, [bodyAlbedo, clothAlbedo]);
 
   useEffect(() => {
     scene.traverse((obj: any) => {
@@ -14,34 +43,55 @@ const RomanticTable = (props: any) => {
       mats.forEach((mat: any) => {
         if (!mat) return;
 
-        // console.log("mesh:", obj.name, "mat:", mat.name, "type:", mat.type);
-
         const name = (mat.name || "").toLowerCase();
 
-        // Icing
-        if (name.includes("cream")) {
-          if (mat.color) mat.color.set("#dcbcc4"); // light pink
-          mat.roughness = 0.35;
-          mat.metalness = 0.0;
+        // Your modelviewer screenshot shows:
+        // (0) Body
+        // (1) Cloth
+        const isBody = name.includes("body");
+        const isCloth = name.includes("cloth");
+
+        if (isBody) {
+          // keep the existing material if it's standard, otherwise replace
+          const m =
+            mat.isMeshStandardMaterial || mat.isMeshPhysicalMaterial
+              ? mat
+              : new THREE.MeshStandardMaterial();
+
+          // base color + texture
+          if (m.color) m.color.set("#2b0a0a"); // deep wood tint
+          m.map = bodyAlbedo;
+          m.roughness = 0.85;
+          m.metalness = 0.05;
+
+          obj.material = m;
+          m.needsUpdate = true;
         }
 
-        // Cake base
-        if (name.includes("cake")) {
-          if (mat.color) mat.color.set("#FFAEBC"); // cake-ish tan
-          mat.roughness = 0.8;
-          mat.metalness = 0.0;
+        if (isCloth) {
+          const m =
+            mat.isMeshStandardMaterial || mat.isMeshPhysicalMaterial
+              ? mat
+              : new THREE.MeshStandardMaterial();
+
+          // cloth tint + texture
+          if (m.color) m.color.set("#ffffff"); // keep cloth color clean; texture can add pattern
+          m.map = clothAlbedo;
+          m.roughness = 1.0;
+          m.metalness = 0.0;
+
+          obj.material = m;
+          m.needsUpdate = true;
         }
 
-        // Strawberries
-        if (name.includes("strawberry")) {
-          if (mat.color) mat.color.set("#dc4a54");
-          mat.roughness = 0.5;
-        }
-
-        mat.needsUpdate = true;
+        // If some meshes have unnamed materials, you can optionally fall back:
+        // else keep original mat
       });
+
+      obj.castShadow = true;
+      obj.receiveShadow = true;
     });
-  }, [scene]);
+  }, [scene, bodyAlbedo, clothAlbedo]);
 
   return (
     <group ref={ref} {...props}>
