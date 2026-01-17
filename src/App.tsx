@@ -266,7 +266,7 @@ function AnimatedScene({
       }
     }
   });
-  const frogControl = useControls('frog', {
+  const genControls = useControls('general', {
     positionX: {
       value: 0,
       min: -10,
@@ -395,9 +395,9 @@ function AnimatedScene({
           scale={4.4}
           />
         <Chudette 
-          position={[frogControl.positionX, frogControl.positionY, frogControl.positionZ]}
-          rotation={[frogControl.rotationX, frogControl.rotationY, frogControl.rotationZ]}
-          scale={frogControl.scale}
+          position={[1.6, -1.4, 1.8]}
+          rotation={[0, -3.4, 0]}
+          scale={10}
           />
         <PictureFrame
           image="/frame2.jpg"
