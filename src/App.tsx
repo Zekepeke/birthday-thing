@@ -58,7 +58,7 @@ const CANDLE_DROP_START =
 
 const totalAnimationTime = CANDLE_DROP_START + CANDLE_DROP_DURATION;
 
-const ORBIT_TARGET = new Vector3(0, -18, 0);
+const ORBIT_TARGET = new Vector3(0, 1, 0);
 const ORBIT_INITIAL_RADIUS = 3;
 const ORBIT_INITIAL_HEIGHT = 1;
 const ORBIT_INITIAL_AZIMUTH = Math.PI / 2;
@@ -653,7 +653,7 @@ export default function App() {
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
           <directionalLight intensity={0.5} position={[2, 10, 0]} color={[1, 0.9, 0.95]}/>
           <Environment
-            files={["/NightEnvironmentHDRI004_1K_TONEMAPPED.jpg"]}
+            files={["/black.jpg"]}
             backgroundRotation={[0, 3.3, 0]}
             environmentRotation={[0, 3.3, 0]}
             background
