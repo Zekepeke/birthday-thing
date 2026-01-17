@@ -484,6 +484,7 @@ export default function App() {
   const [hasAnimationCompleted, setHasAnimationCompleted] = useState(false);
   const [isCandleLit, setIsCandleLit] = useState(true);
   const [fireworksActive, setFireworksActive] = useState(false);
+  const [musicOn, setMusicOn] = useState(true);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -498,19 +499,47 @@ export default function App() {
     };
   }, []);
 
-  const playBackgroundMusic = useCallback(() => {
+
+  const syncMusic = useCallback(
+  async (shouldPlay: boolean) => {
     const audio = backgroundAudioRef.current;
-    if (!audio) {
+    if (!audio) return;
+
+    if (!shouldPlay) {
+      audio.pause();
       return;
     }
-    if (!audio.paused) {
-      return;
+
+    try {
+      // don’t always reset currentTime unless you want it to restart
+      await audio.play();
+    } catch {
+      // browser might block until user gesture; ignore
     }
-    audio.currentTime = 0;
-    void audio.play().catch(() => {
-      // ignore play errors (browser might block)
-    });
-  }, []);
+  },
+  []
+);
+
+const toggleMusic = useCallback(() => {
+  setMusicOn((prev) => {
+    const next = !prev;
+    void syncMusic(next);
+    return next;
+  });
+}, [syncMusic]);
+
+  const playBackgroundMusic = useCallback(() => {
+  if (!musicOn) return;
+
+  const audio = backgroundAudioRef.current;
+  if (!audio) return;
+  if (!audio.paused) return;
+
+  audio.currentTime = 0;
+  void audio.play().catch(() => {
+    // ignore play errors (browser might block)
+  });
+}, [musicOn]);
 
   const typingComplete = currentLineIndex >= TYPED_LINES.length;
   const typedLines = useMemo(() => {
@@ -681,6 +710,56 @@ export default function App() {
           <ConfiguredOrbitControls />
         </Suspense>
       </Canvas>
+      <div
+        style={{
+          position: "fixed",
+          top: 16,
+          right: 16,
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "10px 12px",
+          borderRadius: 999,
+          background: "rgba(0,0,0,0.45)",
+          backdropFilter: "blur(8px)",
+          color: "white",
+          fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+          userSelect: "none",
+        }}
+      >
+        <span style={{ fontSize: 13, opacity: 0.9 }}>Music</span>
+
+        <button
+          type="button"
+          onClick={toggleMusic}
+          aria-pressed={musicOn}
+          aria-label={musicOn ? "Turn music off" : "Turn music on"}
+          style={{
+            width: 46,
+            height: 28,
+            borderRadius: 999,
+            border: "1px solid rgba(255,255,255,0.35)",
+            background: musicOn ? "rgba(255, 105, 180, 0.85)" : "rgba(255,255,255,0.18)",
+            position: "relative",
+            cursor: "pointer",
+            outline: "none",
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              top: 3,
+              left: musicOn ? 22 : 3,
+              width: 22,
+              height: 22,
+              borderRadius: "50%",
+              background: "white",
+              transition: "left 180ms ease",
+            }}
+          />
+        </button>
+      </div>
     </div>
   );
 }
