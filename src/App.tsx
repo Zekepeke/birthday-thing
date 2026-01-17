@@ -19,7 +19,6 @@ import { Fireworks } from "./components/Fireworks";
 import { BirthdayCard } from "./components/BirthdayCard";
 
 import "./App.css";
-// import { Leva, useControls } from 'leva'
 import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Chair from "./models/Chair";
@@ -126,7 +125,6 @@ function AnimatedScene({
 }: AnimatedSceneProps) {
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
-  const buttersGroup = useRef<Group>(null);
   const candleGroup = useRef<Group>(null);
   const animationStartRef = useRef<number | null>(null);
   const hasPrimedRef = useRef(false);
@@ -270,45 +268,6 @@ function AnimatedScene({
       }
     }
   });
-//   const genControls = useControls('general', {
-//     positionX: {
-//       value: 0,
-//       min: -10,
-//       max: 10 
-//     },
-//     positionY: {
-//       value: 0,
-//       min: -10,
-//       max: 10 
-//     }, 
-//     positionZ: {
-//       value: 0,
-//       min: -10,
-//       max: 10 
-//     },
-//     rotationX: {
-//       value: 0,
-//       min: -10,
-//       max: 10 
-//     },
-//     rotationY: {
-//       value: 0,
-//       min: -10,
-//       max: 10 
-//     },
-//     rotationZ: {
-//       value: 0,
-//       min: -10,
-//       max: 10 
-//     },
-//     scale: {
-//       value: 1,
-//       min: 0.1,
-//       max: 10
-//     },
-//   }
-// );
-
   return (
     <>
       <group ref={tableGroup}>

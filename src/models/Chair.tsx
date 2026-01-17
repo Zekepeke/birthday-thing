@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
 const Chair = (props: any) => {
