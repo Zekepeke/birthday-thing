@@ -265,87 +265,87 @@ function AnimatedScene({
       }
     }
   });
-  const buttersControls = useControls(
+//   const buttersControls = useControls(
   
-  'butters', {
-    positionX: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    positionY: {
-      value: 0,
-      min: -10,
-      max: 10
-    }, 
-    positionZ: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    rotationX: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    rotationY: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    rotationZ: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    scale: {
-      value: 1,
-      min: 0.1,
-      max: 10
-    } 
-  }
-)
+//   'butters', {
+//     positionX: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     positionY: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     }, 
+//     positionZ: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     rotationX: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     rotationY: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     rotationZ: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     scale: {
+//       value: 1,
+//       min: 0.1,
+//       max: 10
+//     } 
+//   }
+// )
 
-const tableControls = useControls(
+// const tableControls = useControls(
   
-  'table', {
-    positionX: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    positionY: {
-      value: 0,
-      min: -10,
-      max: 10
-    }, 
-    positionZ: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    rotationX: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    rotationY: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    rotationZ: {
-      value: 0,
-      min: -10,
-      max: 10
-    },
-    scale: {
-      value: 1,
-      min: 0.1,
-      max: 10
-    } 
-  }
-)
+//   'table', {
+//     positionX: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     positionY: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     }, 
+//     positionZ: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     rotationX: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     rotationY: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     rotationZ: {
+//       value: 0,
+//       min: -10,
+//       max: 10
+//     },
+//     scale: {
+//       value: 1,
+//       min: 0.1,
+//       max: 10
+//     } 
+//   }
+// )
 
   return (
     <>
@@ -393,14 +393,14 @@ const tableControls = useControls(
       </group>
       <group ref={buttersGroup}>
         <Chair
-          position={[buttersControls.positionX, buttersControls.positionY, buttersControls.positionZ]}
-          rotation={[buttersControls.rotationX, buttersControls.rotationY, buttersControls.rotationZ]}
-          scale={buttersControls.scale}
+          position={[0.4, -3.8, 1.4]}
+          rotation={[0, 5.2, 0]}
+          scale={0.5}
         />
         <Butters
-          position={[buttersControls.positionX, buttersControls.positionY, buttersControls.positionZ]}
-          rotation={[buttersControls.rotationX, buttersControls.rotationY, buttersControls.rotationZ]}
-          scale={buttersControls.scale}
+          position={[-4.4, -1.4, 4.4]}
+          rotation={[0, 2, 0]}
+          scale={1.3}
         />
 
       </group>
@@ -672,7 +672,7 @@ export default function App() {
             onToggleCard={() => {}}
           />
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
-          <directionalLight intensity={0.5} position={[2, 10, 0]} color={[1, 0.9, 0.95]}/>
+          <directionalLight intensity={1} position={[34, 10, -9]} color={[1, 0.9, 0.95]}/>
           <Environment
             files={["/black.jpg"]}
             backgroundRotation={[0, 3.3, 0]}
