@@ -390,8 +390,6 @@ function AnimatedScene({
             onToggle={onToggleCard}
           />
         ))}
-      </group>
-      <group ref={buttersGroup}>
         <Chair
           position={[0.4, -3.8, 1.4]}
           rotation={[0, 5.2, 0]}
@@ -402,7 +400,6 @@ function AnimatedScene({
           rotation={[0, 2, 0]}
           scale={1.3}
         />
-
       </group>
       <group ref={cakeGroup}>
         <HeartCake 
@@ -490,142 +487,142 @@ export default function App() {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // useEffect(() => {
-  //   const audio = new Audio("/music.mp3");
-  //   audio.loop = true;
-  //   audio.preload = "auto";
-  //   backgroundAudioRef.current = audio;
-  //   return () => {
-  //     audio.pause();
-  //     backgroundAudioRef.current = null;
-  //   };
-  // }, []);
+  useEffect(() => {
+    const audio = new Audio("/music.mp3");
+    audio.loop = true;
+    audio.preload = "auto";
+    backgroundAudioRef.current = audio;
+    return () => {
+      audio.pause();
+      backgroundAudioRef.current = null;
+    };
+  }, []);
 
-  // const playBackgroundMusic = useCallback(() => {
-  //   const audio = backgroundAudioRef.current;
-  //   if (!audio) {
-  //     return;
-  //   }
-  //   if (!audio.paused) {
-  //     return;
-  //   }
-  //   audio.currentTime = 0;
-  //   void audio.play().catch(() => {
-  //     // ignore play errors (browser might block)
-  //   });
-  // }, []);
+  const playBackgroundMusic = useCallback(() => {
+    const audio = backgroundAudioRef.current;
+    if (!audio) {
+      return;
+    }
+    if (!audio.paused) {
+      return;
+    }
+    audio.currentTime = 0;
+    void audio.play().catch(() => {
+      // ignore play errors (browser might block)
+    });
+  }, []);
 
-  // const typingComplete = currentLineIndex >= TYPED_LINES.length;
-  // const typedLines = useMemo(() => {
-  //   if (TYPED_LINES.length === 0) {
-  //     return [""];
-  //   }
+  const typingComplete = currentLineIndex >= TYPED_LINES.length;
+  const typedLines = useMemo(() => {
+    if (TYPED_LINES.length === 0) {
+      return [""];
+    }
 
-  //   return TYPED_LINES.map((line, index) => {
-  //     if (typingComplete || index < currentLineIndex) {
-  //       return line;
-  //     }
-  //     if (index === currentLineIndex) {
-  //       return line.slice(0, Math.min(currentCharIndex, line.length));
-  //     }
-  //     return "";
-  //   });
-  // }, [currentCharIndex, currentLineIndex, typingComplete]);
+    return TYPED_LINES.map((line, index) => {
+      if (typingComplete || index < currentLineIndex) {
+        return line;
+      }
+      if (index === currentLineIndex) {
+        return line.slice(0, Math.min(currentCharIndex, line.length));
+      }
+      return "";
+    });
+  }, [currentCharIndex, currentLineIndex, typingComplete]);
 
-  // const cursorLineIndex = typingComplete
-  //   ? Math.max(typedLines.length - 1, 0)
-  //   : currentLineIndex;
-  // const cursorTargetIndex = Math.max(
-  //   Math.min(cursorLineIndex, typedLines.length - 1),
-  //   0
-  // );
+  const cursorLineIndex = typingComplete
+    ? Math.max(typedLines.length - 1, 0)
+    : currentLineIndex;
+  const cursorTargetIndex = Math.max(
+    Math.min(cursorLineIndex, typedLines.length - 1),
+    0
+  );
 
-  // useEffect(() => {
-  //   if (!hasStarted) {
-  //     setCurrentLineIndex(0);
-  //     setCurrentCharIndex(0);
-  //     setSceneStarted(false);
-  //     setIsCandleLit(true);
-  //     setFireworksActive(false);
-  //     setHasAnimationCompleted(false);
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!hasStarted) {
+      setCurrentLineIndex(0);
+      setCurrentCharIndex(0);
+      setSceneStarted(false);
+      setIsCandleLit(true);
+      setFireworksActive(false);
+      setHasAnimationCompleted(false);
+      return;
+    }
 
-  //   if (typingComplete) {
-  //     if (!sceneStarted) {
-  //       const handle = window.setTimeout(() => {
-  //         setSceneStarted(true);
-  //       }, POST_TYPING_SCENE_DELAY);
-  //       return () => window.clearTimeout(handle);
-  //     }
-  //     return;
-  //   }
+    if (typingComplete) {
+      if (!sceneStarted) {
+        const handle = window.setTimeout(() => {
+          setSceneStarted(true);
+        }, POST_TYPING_SCENE_DELAY);
+        return () => window.clearTimeout(handle);
+      }
+      return;
+    }
 
-  //   const currentLine = TYPED_LINES[currentLineIndex] ?? "";
-  //   const handle = window.setTimeout(() => {
-  //     if (currentCharIndex < currentLine.length) {
-  //       setCurrentCharIndex((prev) => prev + 1);
-  //       return;
-  //     }
+    const currentLine = TYPED_LINES[currentLineIndex] ?? "";
+    const handle = window.setTimeout(() => {
+      if (currentCharIndex < currentLine.length) {
+        setCurrentCharIndex((prev) => prev + 1);
+        return;
+      }
 
-  //     let nextLineIndex = currentLineIndex + 1;
-  //     while (
-  //       nextLineIndex < TYPED_LINES.length &&
-  //       TYPED_LINES[nextLineIndex].length === 0
-  //     ) {
-  //       nextLineIndex += 1;
-  //     }
+      let nextLineIndex = currentLineIndex + 1;
+      while (
+        nextLineIndex < TYPED_LINES.length &&
+        TYPED_LINES[nextLineIndex].length === 0
+      ) {
+        nextLineIndex += 1;
+      }
 
-  //     setCurrentLineIndex(nextLineIndex);
-  //     setCurrentCharIndex(0);
-  //   }, TYPED_CHAR_DELAY);
+      setCurrentLineIndex(nextLineIndex);
+      setCurrentCharIndex(0);
+    }, TYPED_CHAR_DELAY);
 
-  //   return () => window.clearTimeout(handle);
-  // }, [
-  //   hasStarted,
-  //   currentCharIndex,
-  //   currentLineIndex,
-  //   typingComplete,
-  //   sceneStarted,
-  // ]);
+    return () => window.clearTimeout(handle);
+  }, [
+    hasStarted,
+    currentCharIndex,
+    currentLineIndex,
+    typingComplete,
+    sceneStarted,
+  ]);
 
-  // useEffect(() => {
-  //   const handle = window.setInterval(() => {
-  //     setCursorVisible((prev) => !prev);
-  //   }, CURSOR_BLINK_INTERVAL);
-  //   return () => window.clearInterval(handle);
-  // }, []);
+  useEffect(() => {
+    const handle = window.setInterval(() => {
+      setCursorVisible((prev) => !prev);
+    }, CURSOR_BLINK_INTERVAL);
+    return () => window.clearInterval(handle);
+  }, []);
 
-  // useEffect(() => {
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     if (event.code !== "Space" && event.key !== " ") {
-  //       return;
-  //     }
-  //     event.preventDefault();
-  //     if (!hasStarted) {
-  //       playBackgroundMusic();
-  //       setHasStarted(true);
-  //       return;
-  //     }
-  //     if (hasAnimationCompleted && isCandleLit) {
-  //       setIsCandleLit(false);
-  //       setFireworksActive(true);
-  //     }
-  //   };
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code !== "Space" && event.key !== " ") {
+        return;
+      }
+      event.preventDefault();
+      if (!hasStarted) {
+        playBackgroundMusic();
+        setHasStarted(true);
+        return;
+      }
+      if (hasAnimationCompleted && isCandleLit) {
+        setIsCandleLit(false);
+        setFireworksActive(true);
+      }
+    };
 
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   return () => window.removeEventListener("keydown", handleKeyDown);
-  // }, [hasStarted, hasAnimationCompleted, isCandleLit, playBackgroundMusic]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [hasStarted, hasAnimationCompleted, isCandleLit, playBackgroundMusic]);
 
-  // const handleCardToggle = useCallback((id: string) => {
-  //   setActiveCardId((current) => (current === id ? null : id));
-  // }, []);
+  const handleCardToggle = useCallback((id: string) => {
+    setActiveCardId((current) => (current === id ? null : id));
+  }, []);
 
-  // const isScenePlaying = hasStarted && sceneStarted;
+  const isScenePlaying = hasStarted && sceneStarted;
 
   return (
     <div className="App">
-      {/* <div
+      <div
         className="background-overlay"
         style={{ opacity: backgroundOpacity }}
       >
@@ -647,7 +644,7 @@ export default function App() {
             );
           })}
         </div>
-      </div> */}
+      </div>
       {hasAnimationCompleted && isCandleLit && (
         <div className="hint-overlay">press space to blow out the candle</div>
       )}
