@@ -692,7 +692,7 @@ export default function App() {
             onCakePress={blowOutCandle}
           />
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
-          <directionalLight intensity={1.3} position={[20, 10, -9]} color={[1, 0.9, 0.95]}/>
+          <directionalLight intensity={1.4} position={[20, 10, 2]} color={[1, 0.9, 0.95]}/>
           <Environment
             files={["/black.jpg"]}
             backgroundRotation={[0, 3.3, 0]}
