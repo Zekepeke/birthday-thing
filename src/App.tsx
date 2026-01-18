@@ -24,7 +24,7 @@ import Butters from "./models/Butter";
 import Chair from "./models/Chair";
 import DogBed from "./models/DogBed";
 import Zuki from "./models/Zuki";
-import { useControls } from "leva";
+
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -269,39 +269,6 @@ function AnimatedScene({
       }
     }
   });
-
-    const cakeControl = useControls("Cake", {
-      CakeXPosition : {
-        value: 0,
-        min: -10,
-        max: 10,
-        step: 0.1
-      },
-      CakeYPosition : {
-        value: 0,
-        min: -10,
-        max: 10,
-        step: 0.1
-      },
-      CakeZPosition : {
-        value: 0,
-        min: -10,
-        max: 10,
-        step: 0.1
-      },
-      CakeYRotation : {
-        value: 0,
-        min: -10,
-        max: 10,
-        step: 0.1
-      },
-      CakeScale : {
-        value: 1,
-        min: 0.1,
-        max: 5,
-        step: 0.1
-      }
-    });
 
       
 
