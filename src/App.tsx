@@ -24,7 +24,7 @@ import Butters from "./models/Butter";
 import Chair from "./models/Chair";
 import DogBed from "./models/DogBed";
 import Zuki from "./models/Zuki";
-
+import { useControls } from "leva";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -270,6 +270,38 @@ function AnimatedScene({
     }
   });
 
+    const cakeControl = useControls("Cake", {
+      CakeXPosition : {
+        value: 0,
+        min: -10,
+        max: 10,
+        step: 0.1
+      },
+      CakeYPosition : {
+        value: 0,
+        min: -10,
+        max: 10,
+        step: 0.1
+      },
+      CakeZPosition : {
+        value: 0,
+        min: -10,
+        max: 10,
+        step: 0.1
+      },
+      CakeYRotation : {
+        value: 0,
+        min: -10,
+        max: 10,
+        step: 0.1
+      },
+      CakeScale : {
+        value: 1,
+        min: 0.1,
+        max: 5,
+        step: 0.1
+      }
+    });
 
       
 
@@ -356,7 +388,7 @@ function AnimatedScene({
         />
       </group>
       <group ref={candleGroup}>
-        <Candle isLit={candleLit} scale={0.25} position={[1, 0.7, 0.05]} />
+        <Candle isLit={candleLit} scale={0.25} position={[-0.3, 1.37, 0]} />
       </group>
     </>
   );
