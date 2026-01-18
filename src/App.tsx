@@ -270,8 +270,6 @@ function AnimatedScene({
     }
   });
 
-      
-
 
   return (
     <>
