@@ -3,7 +3,7 @@ import { useGLTF } from "@react-three/drei";
 
 const HeartCake = (props: any) => {
   const ref = useRef<any>(null);
-  const { scene } = useGLTF("/heartcake.glb");
+  const { scene } = useGLTF("/happy_bday_cake.glb");
 
   useEffect(() => {
     scene.traverse((obj: any) => {
@@ -52,4 +52,4 @@ const HeartCake = (props: any) => {
 
 export default HeartCake;
 
-useGLTF.preload("/heartcake.glb");
+useGLTF.preload("/happy_bday_cake.glb");
