@@ -318,8 +318,8 @@ function AnimatedScene({
           />
         ))}
         <Chair
-          position={[0.4, -3.8, 1.4]}
-          rotation={[0, 5.2, 0]}
+          position={[4.6, -4.2, -0.6]}
+          rotation={[0, 3.9, 0]}
           scale={0.5}
         />
         <Butters
