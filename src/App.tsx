@@ -271,6 +271,8 @@ function AnimatedScene({
   });
 
 
+
+
   return (
     <>
       <group ref={tableGroup}>
