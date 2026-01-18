@@ -22,7 +22,6 @@ import "./App.css";
 import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Chair from "./models/Chair";
-import DogBed from "./models/DogBed";
 import Zuki from "./models/Zuki";
 
 
@@ -271,8 +270,6 @@ function AnimatedScene({
   });
 
 
-
-
   return (
     <>
       <group ref={tableGroup}>
@@ -326,18 +323,13 @@ function AnimatedScene({
           scale={0.5}
         />
         <Butters
-          position={[-4.4, -1.4, 4.4]}
-          rotation={[0, 2, 0]}
+          position={[0.3, -2.1, -4.6]}
+          rotation={[0, 0.8, 0]}
           scale={1.3}
         />
-        <DogBed
-          position={[-2.4, -3, 10]}
-          rotation={[0, 3.6, 0]}
-          scale={4.5}
-        />
         <Zuki
-          position={[-2, -1.6, 9.6]}
-          rotation={[0, 2.4, 0]}
+          position={[-2.8, 1.4, 2.3]}
+          rotation={[0, -4.2, 0]}
           scale={1.9}
         />
       </group>
