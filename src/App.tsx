@@ -25,6 +25,7 @@ import Chair from "./models/Chair";
 import DogBed from "./models/DogBed";
 import Zuki from "./models/Zuki";
 
+
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
@@ -268,6 +269,11 @@ function AnimatedScene({
       }
     }
   });
+
+
+      
+
+
   return (
     <>
       <group ref={tableGroup}>
@@ -344,12 +350,9 @@ function AnimatedScene({
         }}
       >
         <HeartCake 
-          position={[0.7, -0.3, 0.1]}
-          rotation={[0, 0, 0]}
-          scale={0.4}
-          rotation-x={0}
-          rotation-y={-4.7}
-          rotation-z={0}
+          position={[-0.3, 0.6, 0]}
+          rotation={[0, 0.7, 0]}
+          scale={1.4}
         />
       </group>
       <group ref={candleGroup}>
