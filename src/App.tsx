@@ -271,7 +271,6 @@ function AnimatedScene({
   return (
     <>
       <group ref={tableGroup}>
-        {/* <Table /> */}
         <RomanticTable 
           position={[-1.4, -10, 0.2]}
           scale={4.4}
