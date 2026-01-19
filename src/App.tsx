@@ -658,7 +658,7 @@ export default function App() {
               index === cursorTargetIndex &&
               (!typingComplete || !sceneStarted);
             return (
-              <span className="typed-line" key={`typed-line-${index}`}>
+              <span className="typed-line" style={{ color: "#ff69b4" }} key={`typed-line-${index}`}>
                 {line || "\u00a0"}
                 {showCursor && (
                   <span aria-hidden="true" className="typed-cursor">
