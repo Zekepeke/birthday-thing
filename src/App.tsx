@@ -690,7 +690,7 @@ export default function App() {
             cards={BIRTHDAY_CARDS}
             activeCardId={activeCardId}
             onToggleCard={handleCardToggle}
-            onCakePress={blowOutCandle}
+            onCandlePress={blowOutCandle}
           />
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
           <directionalLight intensity={1.4} position={[20, 10, 2]} color={[1, 0.9, 0.95]}/>
