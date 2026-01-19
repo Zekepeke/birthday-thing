@@ -335,10 +335,6 @@ function AnimatedScene({
       </group>
       <group
         ref={cakeGroup}
-        onPointerDown={(e) => {
-          e.stopPropagation();
-          onCakePress?.();
-        }}
       >
         <HeartCake 
           position={[-0.3, 0.6, 0]}
@@ -346,7 +342,12 @@ function AnimatedScene({
           scale={1.4}
         />
       </group>
-      <group ref={candleGroup}>
+      <group ref={candleGroup}
+      onPointerDown={(e) => {
+          e.stopPropagation();
+          onCakePress?.();
+        }}
+        >
         <Candle isLit={candleLit} scale={0.25} position={[-0.3, 1.37, 0]} />
       </group>
     </>
