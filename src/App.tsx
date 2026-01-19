@@ -41,7 +41,7 @@ type AnimatedSceneProps = {
   cards: ReadonlyArray<BirthdayCardConfig>;
   activeCardId: string | null;
   onToggleCard: (id: string) => void;
-  onCakePress?: () => void; 
+  onCandlePress?: () => void; 
 };
 
 
@@ -121,7 +121,7 @@ function AnimatedScene({
   cards,
   activeCardId,
   onToggleCard,
-  onCakePress,
+  onCandlePress,
 }: AnimatedSceneProps) {
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
@@ -345,7 +345,7 @@ function AnimatedScene({
       <group ref={candleGroup}
       onPointerDown={(e) => {
           e.stopPropagation();
-          onCakePress?.();
+          onCandlePress?.();
         }}
         >
         <Candle isLit={candleLit} scale={0.25} position={[-0.3, 1.37, 0]} />
