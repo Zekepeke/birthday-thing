@@ -23,7 +23,9 @@ import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Zuki from "./models/Zuki";
 import Eric from "./models/Eric";
-// import {useControls} from "leva";
+import {useControls} from "leva";
+import HelloKitty from "./models/HelloKitty";
+import Kuromi from "./models/Kuromi";
 
 
 const clamp = (value: number, min: number, max: number) =>
@@ -276,21 +278,21 @@ function AnimatedScene({
     }
   });
 
-  // const buttersControl = useControls("Butters", {
-  //   poositionX: { value: 0.3, min: -10, max: 10, step: 0.1 },
-  //   poositionY: { value: 0.3, min: -10, max: 10, step: 0.1 },
-  //   poositionZ: { value: -4.6, min: -10, max: 10, step: 0.1 },
-  //   rotationY: { value: 0.8, min: -10, max: 10, step: 0.01 },
-  //   scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
-  // });
+  const kittyControl = useControls("Butters", {
+    poositionX: { value: 0.3, min: -10, max: 10, step: 0.1 },
+    poositionY: { value: 0.3, min: -10, max: 10, step: 0.1 },
+    poositionZ: { value: -4.6, min: -10, max: 10, step: 0.1 },
+    rotationY: { value: 0.8, min: -10, max: 10, step: 0.01 },
+    scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
+  });
 
-  // const ericControl = useControls("Eric", {
-  //   poositionX: { value: 0.3, min: -10, max: 10, step: 0.1 },
-  //   poositionY: { value: -2.1, min: -10, max: 10, step: 0.1 },
-  //   poositionZ: { value: -4.6, min: -10, max: 10, step: 0.1 },
-  //   rotationY: { value: 0.8, min: -10, max: 10, step: 0.01 },
-  //   scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
-  // });
+  const kControl = useControls("Eric", {
+    poositionX: { value: 0.3, min: -10, max: 10, step: 0.1 },
+    poositionY: { value: -2.1, min: -10, max: 10, step: 0.1 },
+    poositionZ: { value: -4.6, min: -10, max: 10, step: 0.1 },
+    rotationY: { value: 0.8, min: -10, max: 10, step: 0.01 },
+    scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
+  });
 
 
 
@@ -350,6 +352,16 @@ function AnimatedScene({
           position={[-3.9, 0, -7.6]}
           rotation={[0, 0.53, 0]}
           scale={2}
+        />
+        <HelloKitty
+          position={[-0.3, 0.6, 0]}
+          rotation={[0, 0.7, 0]}
+          scale={1.4}
+        />
+        <Kuromi
+          position={[-2.8, 1.4, 2.3]}
+          rotation={[0, -4.2, 0]}
+          scale={1.9}
         />
         <Zuki
           position={[-2.8, 1.4, 2.3]}
