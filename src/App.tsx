@@ -323,11 +323,6 @@ function AnimatedScene({
             onToggle={onToggleCard}
           />
         ))}
-        <Chair
-          position={[4.6, -4.2, -0.6]}
-          rotation={[0, 3.9, 0]}
-          scale={0.5}
-        />
         <Butters
           position={[0.3, -2.1, -4.6]}
           rotation={[0, 0.8, 0]}
