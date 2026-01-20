@@ -22,6 +22,7 @@ import "./App.css";
 import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Zuki from "./models/Zuki";
+import Eric from "./models/Eric";
 // import {useControls} from "leva";
 
 
@@ -283,6 +284,15 @@ function AnimatedScene({
   //   scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
   // });
 
+  // const ericControl = useControls("Eric", {
+  //   poositionX: { value: 0.3, min: -10, max: 10, step: 0.1 },
+  //   poositionY: { value: -2.1, min: -10, max: 10, step: 0.1 },
+  //   poositionZ: { value: -4.6, min: -10, max: 10, step: 0.1 },
+  //   rotationY: { value: 0.8, min: -10, max: 10, step: 0.01 },
+  //   scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
+  // });
+
+
 
   return (
     <>
@@ -331,10 +341,15 @@ function AnimatedScene({
             onToggle={onToggleCard}
           />
         ))}
+        <Eric 
+          position={[-7.7, 0.2, -6.2]}
+          rotation={[0, 0.76, 0]}
+          scale={2}
+        />
         <Butters
-          position={[0.3, -2.1, -4.6]}
-          rotation={[0, 0.8, 0]}
-          scale={1.3}
+          position={[-3.9, 0, -7.6]}
+          rotation={[0, 0.53, 0]}
+          scale={2}
         />
         <Zuki
           position={[-2.8, 1.4, 2.3]}
