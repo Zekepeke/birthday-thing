@@ -21,7 +21,6 @@ import { BirthdayCard } from "./components/BirthdayCard";
 import "./App.css";
 import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
-import Chair from "./models/Chair";
 import Zuki from "./models/Zuki";
 
 
