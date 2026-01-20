@@ -22,6 +22,7 @@ import "./App.css";
 import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Zuki from "./models/Zuki";
+// import {useControls} from "leva";
 
 
 const clamp = (value: number, min: number, max: number) =>
@@ -273,6 +274,14 @@ function AnimatedScene({
       }
     }
   });
+
+  // const buttersControl = useControls("Butters", {
+  //   poositionX: { value: 0.3, min: -10, max: 10, step: 0.1 },
+  //   poositionY: { value: 0.3, min: -10, max: 10, step: 0.1 },
+  //   poositionZ: { value: -4.6, min: -10, max: 10, step: 0.1 },
+  //   rotationY: { value: 0.8, min: -10, max: 10, step: 0.01 },
+  //   scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
+  // });
 
 
   return (
