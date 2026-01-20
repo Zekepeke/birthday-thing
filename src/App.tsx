@@ -23,7 +23,6 @@ import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Zuki from "./models/Zuki";
 import Eric from "./models/Eric";
-import {useControls} from "leva";
 import HelloKitty from "./models/HelloKitty";
 import Kuromi from "./models/Kuromi";
 
@@ -278,30 +277,13 @@ function AnimatedScene({
     }
   });
 
-  const kittyControl = useControls("Butters", {
-    poositionX: { value: 0.3, min: -10, max: 10, step: 0.1 },
-    poositionY: { value: 0.3, min: -10, max: 10, step: 0.1 },
-    poositionZ: { value: -4.6, min: -10, max: 10, step: 0.1 },
-    rotationY: { value: 0.8, min: -10, max: 10, step: 0.01 },
-    scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
-  });
-
-  const kControl = useControls("Eric", {
-    poositionX: { value: 0.3, min: -10, max: 10, step: 0.1 },
-    poositionY: { value: -2.1, min: -10, max: 10, step: 0.1 },
-    poositionZ: { value: -4.6, min: -10, max: 10, step: 0.1 },
-    rotationY: { value: 0.8, min: -10, max: 10, step: 0.01 },
-    scale: { value: 1.3, min: 0.1, max: 10, step: 0.1 },
-  });
-
-
 
   return (
     <>
       <group ref={tableGroup}>
         <RomanticTable 
-          position={[-1.4, -10, 0.2]}
-          scale={4.4}
+          position={[-3.4, -14.8, 0.2]}
+          scale={6.5}
           />
         <Chudette 
           position={[1.6, -1.4, 1.8]}
@@ -344,24 +326,24 @@ function AnimatedScene({
           />
         ))}
         <Eric 
-          position={[-7.7, 0.2, -6.2]}
-          rotation={[0, 0.76, 0]}
+          position={[-4.2, 1.9, -2.9]}
+          rotation={[0,-5.2, 0]}
           scale={2}
         />
         <Butters
-          position={[-3.9, 0, -7.6]}
-          rotation={[0, 0.53, 0]}
+          position={[-1.8, 1.9, -4.5]}
+          rotation={[0, -5.5, 0]}
           scale={2}
         />
         <HelloKitty
-          position={[-0.3, 0.6, 0]}
-          rotation={[0, 0.7, 0]}
-          scale={1.4}
+          position={[-3.2, 2.4, 4.8]}
+          rotation={[0, 2.41, 0]}
+          scale={2.4}
         />
         <Kuromi
-          position={[-2.8, 1.4, 2.3]}
-          rotation={[0, -4.2, 0]}
-          scale={1.9}
+          position={[-6.5, 2.4, 2.4]}
+          rotation={[0, 2, 0]}
+          scale={2.6}
         />
         <Zuki
           position={[-2.8, 1.4, 2.3]}
