@@ -3,7 +3,7 @@ import { useGLTF } from "@react-three/drei";
 
 const Butters = (props: any) => {
   const ref = useRef<any>(null);
-  const { scene } = useGLTF("/butters.glb");
+  const { scene } = useGLTF("/birthday-butters.glb");
 
 
 
@@ -16,4 +16,4 @@ const Butters = (props: any) => {
 
 export default Butters;
 
-useGLTF.preload("/butters.glb");
+useGLTF.preload("/birthday-butters.glb");
