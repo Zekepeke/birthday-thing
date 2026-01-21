@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-# birthday-thing
-
-Happy birthday!
-=======
-# Happy Birthday Tina
+# Happy Birthday Amanda
 
 ```
 npm install
 npm run dev
 ```
->>>>>>> 88e003c (initial commit)
