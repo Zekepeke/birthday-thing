@@ -123,6 +123,12 @@ const BIRTHDAY_CARDS: ReadonlyArray<BirthdayCardConfig> = [
     image: "/brother_sister.png",
     position: [-0.7, 0.081, 1.9],
     rotation: [-Math.PI / 2 , 0, 8],
+  },
+  {
+    id: "izzy",
+    image: "/izzy.png",
+    position: [0.4, 0.081, 1.8],
+    rotation: [-Math.PI / 2 , 0, 1],
   }
 ];
 
