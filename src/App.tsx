@@ -28,6 +28,7 @@ import Kuromi from "./models/Kuromi";
 import Chud from "./models/Chud";
 
 
+
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
@@ -106,12 +107,13 @@ type BirthdayCardConfig = {
   rotation: [number, number, number];
 };
 
+
 const BIRTHDAY_CARDS: ReadonlyArray<BirthdayCardConfig> = [
   {
     id: "confetti",
     image: "/mine.jpeg",
-    position: [0.6, 0.081, -2],
-    rotation: [-Math.PI / 2 , 0, Math.PI / 3],
+    position: [1, 0.081, -1.2],
+    rotation: [-Math.PI / 2 , 0, 6],
   },
   {
     id: "angie",
@@ -140,7 +142,7 @@ const BIRTHDAY_CARDS: ReadonlyArray<BirthdayCardConfig> = [
   {
     id: "marriah",
     image: "/marriah.JPG",
-    position: [1.3, 0.095, -3],
+    position: [0.9, 0.095, -2.19],
     rotation: [-Math.PI / 2 , 0, 2.5],
   }
 ];
