@@ -713,7 +713,7 @@ export default function App() {
         </div>
       </div>
       {hasAnimationCompleted && isCandleLit && (
-        <div className="hint-overlay">press space or tap the candle to blow it out</div>
+        <div className="hint-overlay">Press space or tap the candle (or cards)</div>
       )}
       <Canvas
         gl={{ alpha: true }}
