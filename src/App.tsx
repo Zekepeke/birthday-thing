@@ -25,6 +25,7 @@ import Zuki from "./models/Zuki";
 import Eric from "./models/Eric";
 import HelloKitty from "./models/HelloKitty";
 import Kuromi from "./models/Kuromi";
+import Chud from "./models/Chud";
 
 
 const clamp = (value: number, min: number, max: number) =>
@@ -301,6 +302,11 @@ function AnimatedScene({
           position={[1.6, -1.4, 1.8]}
           rotation={[0, -3.4, 0]}
           scale={10}
+          />
+        <Chud 
+          position={[-0.8, -0.0099, -2.3]}
+          rotation={[0,1.28, 0]}
+          scale={1.9}
           />
         <PictureFrame
           image="/frame2.jpg"
