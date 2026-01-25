@@ -1,532 +1,30 @@
 // src/App.tsx
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, OrbitControls } from "@react-three/drei";
-import {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import type { Group } from "three";
-import { Vector3 } from "three";
-import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
-
-// Models & Components
-import { Candle } from "./models/candle";
-import HeartCake from "./models/HeartCake";
-import Chudette from "./models/Chuddette";
-import { PictureFrame } from "./models/pictureFrame";
-import { Fireworks } from "./components/Fireworks";
-import { BirthdayCard } from "./components/BirthdayCard";
-import RomanticTable from "./models/RomanticTable";
-import Butters from "./models/Butter";
-import Zuki from "./models/Zuki";
-import Eric from "./models/Eric";
-import HelloKitty from "./models/HelloKitty";
-import Kuromi from "./models/Kuromi";
-import Chud from "./models/Chud";
-
-// Utilities & Constants
-import { clamp, lerp, easeOutCubic } from "./utils";
-import {
-  CAKE_START_Y,
-  CAKE_END_Y,
-  CAKE_DESCENT_DURATION,
-  BUTTERS_START_Y,
-  BUTTERS_END_Y,
-  BUTTERS_APPEAR_START,
-  BUTTERS_APPEAR_DURATION,
-  TABLE_START_Z,
-  TABLE_END_Z,
-  TABLE_SLIDE_DURATION,
-  TABLE_SLIDE_START,
-  CANDLE_START_Y,
-  CANDLE_END_Y,
-  CANDLE_DROP_DURATION,
-  CANDLE_DROP_START,
-  TOTAL_ANIMATION_TIME,
-  BACKGROUND_FADE_START,
-  BACKGROUND_FADE_DURATION,
-  ORBIT_TARGET,
-  ORBIT_INITIAL_RADIUS,
-  ORBIT_INITIAL_HEIGHT,
-  ORBIT_INITIAL_AZIMUTH,
-  ORBIT_MIN_DISTANCE,
-  ORBIT_MAX_DISTANCE,
-  ORBIT_MIN_POLAR,
-  ORBIT_MAX_POLAR,
-  TYPED_LINES,
-  TYPED_CHAR_DELAY,
-  POST_TYPING_SCENE_DELAY,
-  CURSOR_BLINK_INTERVAL,
-  BIRTHDAY_CARDS,
-  type BirthdayCardConfig,
-} from "./constants";
-
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { AnimatedScene } from "./components/AnimatedScene";
+import { TypingOverlay } from "./components/TypingOverlay";
+import { useAudio, playOneShot } from "./hooks/useAudio";
+import { BIRTHDAY_CARDS } from "./constants";
 import "./App.css";
-
-type AnimatedSceneProps = {
-  isPlaying: boolean;
-  onBackgroundFadeChange?: (opacity: number) => void;
-  onEnvironmentProgressChange?: (progress: number) => void;
-  candleLit: boolean;
-  onAnimationComplete?: () => void;
-  cards: ReadonlyArray<BirthdayCardConfig>;
-  activeCardId: string | null;
-  onToggleCard: (id: string) => void;
-  onCandlePress?: () => void;
-  onButtersPress?: () => void;
-};
-
-function AnimatedScene({
-  isPlaying,
-  onBackgroundFadeChange,
-  onEnvironmentProgressChange,
-  candleLit,
-  onAnimationComplete,
-  cards,
-  activeCardId,
-  onToggleCard,
-  onCandlePress,
-  onButtersPress,
-}: AnimatedSceneProps) {
-  const cakeGroup = useRef<Group>(null);
-  const tableGroup = useRef<Group>(null);
-  const candleGroup = useRef<Group>(null);
-  const voiceGroup = useRef<Group>(null);
-  const animationStartRef = useRef<number | null>(null);
-  const hasPrimedRef = useRef(false);
-  const hasCompletedRef = useRef(false);
-  const completionNotifiedRef = useRef(false);
-  const backgroundOpacityRef = useRef(1);
-  const environmentProgressRef = useRef(0);
-
-  useEffect(() => {
-    onBackgroundFadeChange?.(backgroundOpacityRef.current);
-    onEnvironmentProgressChange?.(environmentProgressRef.current);
-  }, [onBackgroundFadeChange, onEnvironmentProgressChange]);
-
-  const emitBackgroundOpacity = (value: number) => {
-    const clamped = clamp(value, 0, 1);
-    if (Math.abs(clamped - backgroundOpacityRef.current) > 0.005) {
-      backgroundOpacityRef.current = clamped;
-      onBackgroundFadeChange?.(clamped);
-    }
-  };
-
-  const emitEnvironmentProgress = (value: number) => {
-    const clamped = clamp(value, 0, 1);
-    if (Math.abs(clamped - environmentProgressRef.current) > 0.005) {
-      environmentProgressRef.current = clamped;
-      onEnvironmentProgressChange?.(clamped);
-    }
-  };
-
-  useFrame(({ clock }) => {
-    const cake = cakeGroup.current;
-    const table = tableGroup.current;
-    const candle = candleGroup.current;
-    const voice = voiceGroup.current;
-
-    if (!cake || !table || !candle || !voice) {
-      return;
-    }
-
-    // --- INITIAL SETUP ---
-    if (!hasPrimedRef.current) {
-      cake.position.set(0, CAKE_START_Y, 0);
-      cake.rotation.set(0, 0, 0);
-      table.position.set(0, 0, TABLE_START_Z);
-      table.rotation.set(0, 0, 0);
-      candle.position.set(0, CANDLE_START_Y, 0);
-      
-      // Setup Butters (Hidden initially)
-      voice.visible = false;
-      voice.position.set(-1.8, BUTTERS_START_Y, -4.5);
-      
-      candle.visible = false;
-      hasPrimedRef.current = true;
-    }
-
-    if (!isPlaying) {
-      emitBackgroundOpacity(1);
-      emitEnvironmentProgress(0);
-      animationStartRef.current = null;
-      hasCompletedRef.current = false;
-      completionNotifiedRef.current = false;
-      return;
-    }
-
-    if (hasCompletedRef.current) {
-      emitBackgroundOpacity(0);
-      emitEnvironmentProgress(1);
-      if (!completionNotifiedRef.current) {
-        completionNotifiedRef.current = true;
-        onAnimationComplete?.();
-      }
-      return;
-    }
-
-    if (animationStartRef.current === null) {
-      animationStartRef.current = clock.elapsedTime;
-    }
-
-    const elapsed = clock.elapsedTime - animationStartRef.current;
-    const clampedElapsed = clamp(elapsed, 0, TOTAL_ANIMATION_TIME);
-
-    // --- CAKE ANIMATION ---
-    const cakeProgress = clamp(clampedElapsed / CAKE_DESCENT_DURATION, 0, 1);
-    const cakeEase = easeOutCubic(cakeProgress);
-    cake.position.y = lerp(CAKE_START_Y, CAKE_END_Y, cakeEase);
-    cake.position.x = 0;
-    cake.position.z = 0;
-    cake.rotation.y = cakeEase * Math.PI * 2;
-    cake.rotation.x = 0;
-    cake.rotation.z = 0;
-
-    // --- TABLE ANIMATION ---
-    let tableZ = TABLE_START_Z;
-    if (clampedElapsed >= TABLE_SLIDE_START) {
-      const tableProgress = clamp(
-        (clampedElapsed - TABLE_SLIDE_START) / TABLE_SLIDE_DURATION,
-        0,
-        1
-      );
-      const tableEase = easeOutCubic(tableProgress);
-      tableZ = lerp(TABLE_START_Z, TABLE_END_Z, tableEase);
-    }
-    table.position.set(0, 0, tableZ);
-    table.rotation.set(0, 0, 0);
-
-    // --- BUTTERS ANIMATION ---
-    if (clampedElapsed >= BUTTERS_APPEAR_START) {
-      if (!voice.visible) voice.visible = true;
-
-      const buttersProgress = clamp(
-        (clampedElapsed - BUTTERS_APPEAR_START) / BUTTERS_APPEAR_DURATION,
-        0,
-        1
-      );
-      const buttersEase = easeOutCubic(buttersProgress);
-      const currentButtersY = lerp(BUTTERS_START_Y, BUTTERS_END_Y, buttersEase);
-      voice.position.set(-1.8, currentButtersY, -4.5);
-    } else {
-      voice.visible = false;
-    }
-
-    // --- CANDLE ANIMATION ---
-    if (clampedElapsed >= CANDLE_DROP_START) {
-      if (!candle.visible) {
-        candle.visible = true;
-      }
-      const candleProgress = clamp(
-        (clampedElapsed - CANDLE_DROP_START) / CANDLE_DROP_DURATION,
-        0,
-        1
-      );
-      const candleEase = easeOutCubic(candleProgress);
-      candle.position.y = lerp(CANDLE_START_Y, CANDLE_END_Y, candleEase);
-    } else {
-      candle.visible = false;
-      candle.position.set(0, CANDLE_START_Y, 0);
-    }
-
-    // --- BACKGROUND FADE ---
-    if (clampedElapsed < BACKGROUND_FADE_START) {
-      emitBackgroundOpacity(1);
-      emitEnvironmentProgress(0);
-    } else {
-      const fadeProgress = clamp(
-        (clampedElapsed - BACKGROUND_FADE_START) / BACKGROUND_FADE_DURATION,
-        0,
-        1
-      );
-      const eased = easeOutCubic(fadeProgress);
-      const backgroundOpacity = 1 - eased;
-      emitBackgroundOpacity(backgroundOpacity);
-      emitEnvironmentProgress(1 - backgroundOpacity);
-    }
-
-    // --- CLEANUP ---
-    const animationDone = clampedElapsed >= TOTAL_ANIMATION_TIME;
-    if (animationDone) {
-      cake.position.set(0, CAKE_END_Y, 0);
-      cake.rotation.set(0, 0, 0);
-      table.position.set(0, 0, TABLE_END_Z);
-      candle.position.set(0, CANDLE_END_Y, 0);
-      
-      // Ensure Butters is final
-      voice.position.set(-1.8, BUTTERS_END_Y, -4.5);
-      voice.visible = true;
-      
-      candle.visible = true;
-      emitBackgroundOpacity(0);
-      emitEnvironmentProgress(1);
-      hasCompletedRef.current = true;
-      if (!completionNotifiedRef.current) {
-        completionNotifiedRef.current = true;
-        onAnimationComplete?.();
-      }
-    }
-  });
-
-  return (
-    <>
-      <group ref={tableGroup}>
-        <RomanticTable 
-          position={[-3.4, -14.8, 0.2]}
-          scale={6.5}
-        />
-        <Chudette 
-          position={[1.6, -1.4, 1.8]}
-          rotation={[0, -3.4, 0]}
-          scale={10}
-        />
-        <Chud 
-          position={[-0.8, -0.0099, -2.3]}
-          rotation={[0,1.28, 0]}
-          scale={1.9}
-        />
-        <PictureFrame
-          image="/frame2.jpg"
-          position={[0, 0.735, 3]}
-          rotation={[0, 5.6, 0]}
-          scale={0.75}
-        />
-        <PictureFrame
-          image="/frame3.jpg"
-          position={[0, 0.735, -3]}
-          rotation={[0, 4.0, 0]}
-          scale={0.75}
-        />
-        <PictureFrame
-          image="/frame4.jpg"
-          position={[-1.5, 0.735, 2.5]}
-          rotation={[0, 5.4, 0]}
-          scale={0.75}
-        />
-        <PictureFrame
-          image="/frame1.jpg"
-          position={[-1.5, 0.735, -2.5]}
-          rotation={[0, 4.2, 0]}
-          scale={0.75}
-        />
-        {cards.map((card) => (
-          <BirthdayCard
-            key={card.id}
-            id={card.id}
-            image={card.image}
-            tablePosition={card.position}
-            tableRotation={card.rotation}
-            isActive={activeCardId === card.id}
-            onToggle={onToggleCard}
-          />
-        ))}
-        <Eric 
-          position={[-4.2, 1.9, -2.9]}
-          rotation={[0,-5.2, 0]}
-          scale={2}
-        />
-        <HelloKitty
-          position={[-3.2, 2.4, 4.8]}
-          rotation={[0, 2.41, 0]}
-          scale={2.4}
-        />
-        <Kuromi
-          position={[-6.5, 2.4, 2.4]}
-          rotation={[0, 2, 0]}
-          scale={2.6}
-        />
-        <Zuki
-          position={[-2.8, 1.4, 2.3]}
-          rotation={[0, -4.2, 0]}
-          scale={1.9}
-        />
-      </group>
-      
-      <group ref={voiceGroup}
-        onPointerDown={(e) => {
-          e.stopPropagation();
-          onButtersPress?.();
-        }}
-      >
-        {/* Position set to 0,0,0 because the Group is moving */}
-        <Butters
-          position={[0, 0, 0]}
-          rotation={[0, -5.5, 0]}
-          scale={2}
-        />
-      </group>
-
-      <group ref={cakeGroup}>
-        <HeartCake 
-          position={[-0.3, 0.6, 0]}
-          rotation={[0, 0.7, 0]}
-          scale={1.4}
-        />
-      </group>
-      <group ref={candleGroup}
-      onPointerDown={(e) => {
-          e.stopPropagation();
-          onCandlePress?.();
-        }}
-        >
-        <Candle isLit={candleLit} scale={0.25} position={[-0.3, 1.37, 0]} />
-      </group>
-    </>
-  );
-}
-
-function ConfiguredOrbitControls() {
-  const controlsRef = useRef<OrbitControlsImpl>(null);
-  const camera = useThree((state) => state.camera);
-
-  useEffect(() => {
-    const offset = new Vector3(
-      Math.sin(ORBIT_INITIAL_AZIMUTH) * ORBIT_INITIAL_RADIUS,
-      ORBIT_INITIAL_HEIGHT,
-      Math.cos(ORBIT_INITIAL_AZIMUTH) * ORBIT_INITIAL_RADIUS
-    );
-    const cameraPosition = ORBIT_TARGET.clone().add(offset);
-    camera.position.copy(cameraPosition);
-    camera.lookAt(ORBIT_TARGET);
-
-    const controls = controlsRef.current;
-    if (controls) {
-      controls.target.copy(ORBIT_TARGET);
-      controls.update();
-    }
-  }, [camera]);
-
-  return (
-    <OrbitControls
-      ref={controlsRef}
-      enableDamping
-      dampingFactor={0.05}
-      minDistance={ORBIT_MIN_DISTANCE}
-      maxDistance={ORBIT_MAX_DISTANCE}
-      minPolarAngle={ORBIT_MIN_POLAR}
-      maxPolarAngle={ORBIT_MAX_POLAR}
-    />
-  );
-}
-
-type EnvironmentBackgroundControllerProps = {
-  intensity: number;
-};
-
-function EnvironmentBackgroundController({
-  intensity,
-}: EnvironmentBackgroundControllerProps) {
-  const scene = useThree((state) => state.scene);
-
-  useEffect(() => {
-    if ("backgroundIntensity" in scene) {
-      (scene as typeof scene & { backgroundIntensity: number }).backgroundIntensity =
-        intensity;
-    }
-  }, [scene, intensity]);
-
-  return null;
-}
 
 export default function App() {
   const [hasStarted, setHasStarted] = useState(false);
+  const [sceneStarted, setSceneStarted] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(1);
   const [environmentProgress, setEnvironmentProgress] = useState(0);
-  const [currentLineIndex, setCurrentLineIndex] = useState(0);
-  const [currentCharIndex, setCurrentCharIndex] = useState(0);
-  const [sceneStarted, setSceneStarted] = useState(false);
-  const [cursorVisible, setCursorVisible] = useState(true);
   const [hasAnimationCompleted, setHasAnimationCompleted] = useState(false);
   const [isCandleLit, setIsCandleLit] = useState(true);
   const [fireworksActive, setFireworksActive] = useState(false);
-  const [musicOn, setMusicOn] = useState(true);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
-  const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    const audio = new Audio("/in_da_club.mp3");
-    audio.loop = true;
-    audio.preload = "auto";
-    backgroundAudioRef.current = audio;
-    return () => {
-      audio.pause();
-      backgroundAudioRef.current = null;
-    };
-  }, []);
-
-  const syncMusic = useCallback(
-  async (shouldPlay: boolean) => {
-    const audio = backgroundAudioRef.current;
-    if (!audio) return;
-
-    if (!shouldPlay) {
-      audio.pause();
-      return;
-    }
-
-    try {
-      await audio.play();
-    } catch {
-      // browser might block until user gesture; ignore
-    }
-  },[]
-  );
-
-  const toggleMusic = useCallback(() => {
-    setMusicOn((prev) => {
-      const next = !prev;
-      void syncMusic(next);
-      return next;
-    });
-  }, [syncMusic]);
-
-  const playBackgroundMusic = useCallback(() => {
-  if (!musicOn) return;
-
-  const audio = backgroundAudioRef.current;
-  if (!audio) return;
-  if (!audio.paused) return;
-
-  audio.currentTime = 0;
-  void audio.play().catch(() => {
-    // ignore play errors (browser might block)
-  });
-  }, [musicOn]);
-
-  const typingComplete = currentLineIndex >= TYPED_LINES.length;
-  const typedLines = useMemo(() => {
-    if (TYPED_LINES.length === 0) {
-      return [""];
-    }
-
-    return TYPED_LINES.map((line, index) => {
-      if (typingComplete || index < currentLineIndex) {
-        return line;
-      }
-      if (index === currentLineIndex) {
-        return line.slice(0, Math.min(currentCharIndex, line.length));
-      }
-      return "";
-    });
-  }, [currentCharIndex, currentLineIndex, typingComplete]);
-
-  const cursorLineIndex = typingComplete
-    ? Math.max(typedLines.length - 1, 0)
-    : currentLineIndex;
-  const cursorTargetIndex = Math.max(
-    Math.min(cursorLineIndex, typedLines.length - 1),
-    0
-  );
+  // Custom Hook for Music
+  const { musicOn, toggleMusic, playMusic } = useAudio("/in_da_club.mp3");
 
   const startExperience = useCallback(() => {
     if (hasStarted) return;
-    playBackgroundMusic();
+    playMusic();
     setHasStarted(true);
-  }, [hasStarted, playBackgroundMusic]);
+  }, [hasStarted, playMusic]);
 
   const blowOutCandle = useCallback(() => {
     if (!hasAnimationCompleted || !isCandleLit) return;
@@ -534,233 +32,86 @@ export default function App() {
     setFireworksActive(true);
   }, [hasAnimationCompleted, isCandleLit]);
 
-  const playVoice = useCallback(() => {
-    const audio = new Audio("/butters_voice.wav");
-    audio.loop = false;
-    audio.preload = "auto";
-    void audio.play().catch(() => {
-      // ignore play errors
-    });
-  }, []);
-
-
+  // Handle Interactions (Keyboard & Touch)
   useEffect(() => {
-    if (!hasStarted) {
-      setCurrentLineIndex(0);
-      setCurrentCharIndex(0);
-      setSceneStarted(false);
-      setIsCandleLit(true);
-      setFireworksActive(false);
-      setHasAnimationCompleted(false);
-      return;
-    }
-
-    if (typingComplete) {
-      if (!sceneStarted) {
-        const handle = window.setTimeout(() => {
-          setSceneStarted(true);
-        }, POST_TYPING_SCENE_DELAY);
-        return () => window.clearTimeout(handle);
-      }
-      return;
-    }
-
-    const currentLine = TYPED_LINES[currentLineIndex] ?? "";
-    const handle = window.setTimeout(() => {
-      if (currentCharIndex < currentLine.length) {
-        setCurrentCharIndex((prev) => prev + 1);
-        return;
-      }
-
-      let nextLineIndex = currentLineIndex + 1;
-      while (
-        nextLineIndex < TYPED_LINES.length &&
-        TYPED_LINES[nextLineIndex].length === 0
-      ) {
-        nextLineIndex += 1;
-      }
-
-      setCurrentLineIndex(nextLineIndex);
-      setCurrentCharIndex(0);
-    }, TYPED_CHAR_DELAY);
-
-    return () => window.clearTimeout(handle);
-  }, [
-    hasStarted,
-    currentCharIndex,
-    currentLineIndex,
-    typingComplete,
-    sceneStarted,
-  ]);
-
-  useEffect(() => {
-    const handle = window.setInterval(() => {
-      setCursorVisible((prev) => !prev);
-    }, CURSOR_BLINK_INTERVAL);
-    return () => window.clearInterval(handle);
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code !== "Space" && event.key !== " ") return;
-
-      event.preventDefault();
-
-      if (!hasStarted) {
-        startExperience();
-        return;
-      }
-
-      // Space blows out candle once animation is done
-      blowOutCandle();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code !== "Space" && e.key !== " ") return;
+      e.preventDefault();
+      if (!hasStarted) startExperience();
+      else blowOutCandle();
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [hasStarted, startExperience, blowOutCandle]);
-
-
-  useEffect(() => {
-    const handlePointerStart = (event: Event) => {
+    const handlePointerStart = (e: Event) => {
       if (hasStarted) return;
-
-      const target = event.target as HTMLElement | null;
-
-      if (target?.closest("button, a, input, textarea, select, [data-ignore-start]")) {
-        return;
-      }
-
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("button")) return;
       startExperience();
     };
 
+    window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("pointerdown", handlePointerStart);
-    // fallback for older iOS edge cases
     window.addEventListener("touchstart", handlePointerStart);
 
     return () => {
+      window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("pointerdown", handlePointerStart);
       window.removeEventListener("touchstart", handlePointerStart);
     };
-  }, [hasStarted, startExperience]);
-
-
-  const handleCardToggle = useCallback((id: string) => {
-    setActiveCardId((current) => (current === id ? null : id));
-  }, []);
-
-  const isScenePlaying = hasStarted && sceneStarted;
+  }, [hasStarted, startExperience, blowOutCandle]);
 
   return (
     <div className="App">
-      <div
-        className="background-overlay"
-        style={{ opacity: backgroundOpacity }}
-      >
-        <div className="typed-text">
-          {typedLines.map((line, index) => {
-            const showCursor =
-              cursorVisible &&
-              index === cursorTargetIndex &&
-              (!typingComplete || !sceneStarted);
-            return (
-              <span className="typed-line" style={{ color: "#ff69b4" }} key={`typed-line-${index}`}>
-                {line || "\u00a0"}
-                {showCursor && (
-                  <span aria-hidden="true" className="typed-cursor">
-                    _
-                  </span>
-                )}
-              </span>
-            );
-          })}
-        </div>
-      </div>
+      <TypingOverlay 
+        hasStarted={hasStarted} 
+        onTypingComplete={() => setSceneStarted(true)}
+        backgroundOpacity={backgroundOpacity}
+      />
+
       {hasAnimationCompleted && isCandleLit && (
         <div className="hint-overlay">Press space or tap the candle (or cards)</div>
       )}
+
       <Canvas
         gl={{ alpha: true }}
         style={{ background: "transparent" }}
-        onCreated={({ gl }) => {
-          gl.setClearColor("#000000", 0);
-        }}
+        onCreated={({ gl }) => gl.setClearColor("#000000", 0)}
       >
         <Suspense fallback={null}>
           <AnimatedScene
-            isPlaying={isScenePlaying}
+            isPlaying={hasStarted && sceneStarted}
             candleLit={isCandleLit}
+            fireworksActive={fireworksActive}
             onBackgroundFadeChange={setBackgroundOpacity}
             onEnvironmentProgressChange={setEnvironmentProgress}
             onAnimationComplete={() => setHasAnimationCompleted(true)}
             cards={BIRTHDAY_CARDS}
             activeCardId={activeCardId}
-            onToggleCard={handleCardToggle}
+            onToggleCard={(id) => setActiveCardId((prev) => (prev === id ? null : id))}
             onCandlePress={blowOutCandle}
-            onButtersPress={playVoice}
+            onButtersPress={() => playOneShot("/butters_voice.wav")}
           />
-          <ambientLight intensity={(1 - environmentProgress) * 0.8} />
-          <directionalLight intensity={1.4} position={[20, 10, 2]} color={[1, 0.9, 0.95]}/>
-          <Environment
-            files={["/black.jpg"]}
-            backgroundRotation={[0, 3.3, 0]}
-            environmentRotation={[0, 3.3, 0]}
-            background
-            environmentIntensity={0.1 * environmentProgress}
-            backgroundIntensity={0.7 * environmentProgress}
-          />
-          <EnvironmentBackgroundController intensity={1 * environmentProgress} />
-          <Fireworks isActive={fireworksActive} origin={[0, 10, 0]} />
-          <ConfiguredOrbitControls />
         </Suspense>
       </Canvas>
-      <div
-        style={{
-          position: "fixed",
-          top: 16,
-          right: 16,
-          zIndex: 9999,
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          padding: "10px 12px",
-          borderRadius: 999,
-          background: "rgba(0,0,0,0.45)",
-          backdropFilter: "blur(8px)",
-          color: "white",
-          fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
-          userSelect: "none",
-        }}
-      >
-        <span style={{ fontSize: 13, opacity: 0.9 }}>Music</span>
 
+      {/* Music Control UI */}
+      <div style={{
+          position: "fixed", top: 16, right: 16, zIndex: 9999, display: "flex", 
+          alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 999, 
+          background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)", color: "white", 
+          fontFamily: "system-ui, -apple-system, sans-serif", userSelect: "none"
+        }}>
+        <span style={{ fontSize: 13, opacity: 0.9 }}>Music</span>
         <button
-          type="button"
           onClick={toggleMusic}
-          aria-pressed={musicOn}
-          aria-label={musicOn ? "Turn music off" : "Turn music on"}
           style={{
-            width: 46,
-            height: 28,
-            borderRadius: 999,
-            border: "1px solid rgba(255,255,255,0.35)",
-            background: musicOn ? "rgba(255, 105, 180, 0.85)" : "rgba(255,255,255,0.18)",
-            position: "relative",
-            cursor: "pointer",
-            outline: "none",
+            width: 46, height: 28, borderRadius: 999, cursor: "pointer", border: "1px solid rgba(255,255,255,0.35)",
+            background: musicOn ? "rgba(255, 105, 180, 0.85)" : "rgba(255,255,255,0.18)", position: "relative"
           }}
         >
-          <span
-            style={{
-              position: "absolute",
-              top: 3,
-              left: musicOn ? 22 : 3,
-              width: 22,
-              height: 22,
-              borderRadius: "50%",
-              background: "white",
-              transition: "left 180ms ease",
-            }}
-          />
+          <span style={{
+              position: "absolute", top: 3, left: musicOn ? 22 : 3, width: 22, height: 22, 
+              borderRadius: "50%", background: "white", transition: "left 180ms ease"
+            }} />
         </button>
       </div>
     </div>
