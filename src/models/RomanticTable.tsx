@@ -10,8 +10,8 @@ const RomanticTable = (props: any) => {
     bodyAlbedo,
     clothAlbedo,
   ] = useTexture([
-    "/textures/round_table_body_albedo.jpg",
-    "/textures/round_table_cloth_albedo.jpg",
+    "/textures/round_table_body_albedo.jpeg",
+    "/textures/round_table_cloth_albedo.jpeg",
   ]);
 
   // Texture housekeeping
