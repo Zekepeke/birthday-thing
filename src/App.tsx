@@ -363,11 +363,6 @@ function AnimatedScene({
           rotation={[0,-5.2, 0]}
           scale={2}
         />
-        <Butters
-          position={[-1.8, 1.9, -4.5]}
-          rotation={[0, -5.5, 0]}
-          scale={2}
-        />
         <HelloKitty
           position={[-3.2, 2.4, 4.8]}
           rotation={[0, 2.41, 0]}
@@ -382,6 +377,13 @@ function AnimatedScene({
           position={[-2.8, 1.4, 2.3]}
           rotation={[0, -4.2, 0]}
           scale={1.9}
+        />
+      </group>
+      <group ref={voiceGroup}>
+        <Butters
+          position={[-1.8, 1.9, -4.5]}
+          rotation={[0, -5.5, 0]}
+          scale={2}
         />
       </group>
       <group
@@ -483,6 +485,15 @@ export default function App() {
     return () => {
       audio.pause();
       backgroundAudioRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const audio = new Audio("/butters_voice.wav");
+    audio.loop = false;
+    audio.preload = "auto";
+    return () => {
+      audio.pause();
     };
   }, []);
 
