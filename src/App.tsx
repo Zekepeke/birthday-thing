@@ -46,6 +46,7 @@ type AnimatedSceneProps = {
   activeCardId: string | null;
   onToggleCard: (id: string) => void;
   onCandlePress?: () => void; 
+  onButtersPress?: () => void;
 };
 
 
@@ -157,6 +158,7 @@ function AnimatedScene({
   activeCardId,
   onToggleCard,
   onCandlePress,
+  onButtersPress,
 }: AnimatedSceneProps) {
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
@@ -379,7 +381,13 @@ function AnimatedScene({
           scale={1.9}
         />
       </group>
-      <group ref={voiceGroup}>
+      <group ref={voiceGroup}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          onButtersPress?.();
+        }}
+      >
+        
         <Butters
           position={[-1.8, 1.9, -4.5]}
           rotation={[0, -5.5, 0]}
@@ -488,16 +496,6 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    const audio = new Audio("/butters_voice.wav");
-    audio.loop = false;
-    audio.preload = "auto";
-    return () => {
-      audio.pause();
-    };
-  }, []);
-
-
   const syncMusic = useCallback(
   async (shouldPlay: boolean) => {
     const audio = backgroundAudioRef.current;
@@ -574,6 +572,15 @@ export default function App() {
     setIsCandleLit(false);
     setFireworksActive(true);
   }, [hasAnimationCompleted, isCandleLit]);
+
+  const playVoice = useCallback(() => {
+    const audio = new Audio("/butters_voice.wav");
+    audio.loop = false;
+    audio.preload = "auto";
+    void audio.play().catch(() => {
+      // ignore play errors (browser might block)
+    });
+  }, []);
 
 
   useEffect(() => {
@@ -753,6 +760,7 @@ export default function App() {
             activeCardId={activeCardId}
             onToggleCard={handleCardToggle}
             onCandlePress={blowOutCandle}
+            onButtersPress={playVoice}
           />
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
           <directionalLight intensity={1.4} position={[20, 10, 2]} color={[1, 0.9, 0.95]}/>
