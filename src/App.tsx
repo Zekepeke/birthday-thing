@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
 import {
@@ -11,14 +12,14 @@ import {
 import type { Group } from "three";
 import { Vector3 } from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+
+// Models & Components
 import { Candle } from "./models/candle";
 import HeartCake from "./models/HeartCake";
 import Chudette from "./models/Chuddette";
 import { PictureFrame } from "./models/pictureFrame";
 import { Fireworks } from "./components/Fireworks";
 import { BirthdayCard } from "./components/BirthdayCard";
-
-import "./App.css";
 import RomanticTable from "./models/RomanticTable";
 import Butters from "./models/Butter";
 import Zuki from "./models/Zuki";
@@ -27,14 +28,44 @@ import HelloKitty from "./models/HelloKitty";
 import Kuromi from "./models/Kuromi";
 import Chud from "./models/Chud";
 
+// Utilities & Constants
+import { clamp, lerp, easeOutCubic } from "./utils";
+import {
+  CAKE_START_Y,
+  CAKE_END_Y,
+  CAKE_DESCENT_DURATION,
+  BUTTERS_START_Y,
+  BUTTERS_END_Y,
+  BUTTERS_APPEAR_START,
+  BUTTERS_APPEAR_DURATION,
+  TABLE_START_Z,
+  TABLE_END_Z,
+  TABLE_SLIDE_DURATION,
+  TABLE_SLIDE_START,
+  CANDLE_START_Y,
+  CANDLE_END_Y,
+  CANDLE_DROP_DURATION,
+  CANDLE_DROP_START,
+  TOTAL_ANIMATION_TIME,
+  BACKGROUND_FADE_START,
+  BACKGROUND_FADE_DURATION,
+  ORBIT_TARGET,
+  ORBIT_INITIAL_RADIUS,
+  ORBIT_INITIAL_HEIGHT,
+  ORBIT_INITIAL_AZIMUTH,
+  ORBIT_MIN_DISTANCE,
+  ORBIT_MAX_DISTANCE,
+  ORBIT_MIN_POLAR,
+  ORBIT_MAX_POLAR,
+  TYPED_LINES,
+  TYPED_CHAR_DELAY,
+  POST_TYPING_SCENE_DELAY,
+  CURSOR_BLINK_INTERVAL,
+  BIRTHDAY_CARDS,
+  type BirthdayCardConfig,
+} from "./constants";
 
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
-
-const lerp = (from: number, to: number, t: number) => from + (to - from) * t;
-
-const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+import "./App.css";
 
 type AnimatedSceneProps = {
   isPlaying: boolean;
@@ -45,10 +76,9 @@ type AnimatedSceneProps = {
   cards: ReadonlyArray<BirthdayCardConfig>;
   activeCardId: string | null;
   onToggleCard: (id: string) => void;
-  onCandlePress?: () => void; 
+  onCandlePress?: () => void;
   onButtersPress?: () => void;
 };
-
 
 function AnimatedScene({
   isPlaying,
@@ -104,13 +134,18 @@ function AnimatedScene({
       return;
     }
 
+    // --- INITIAL SETUP ---
     if (!hasPrimedRef.current) {
       cake.position.set(0, CAKE_START_Y, 0);
       cake.rotation.set(0, 0, 0);
       table.position.set(0, 0, TABLE_START_Z);
       table.rotation.set(0, 0, 0);
       candle.position.set(0, CANDLE_START_Y, 0);
-      voice.position.set(-1.8, 1.9, -4.5);
+      
+      // Setup Butters (Hidden initially)
+      voice.visible = false;
+      voice.position.set(-1.8, BUTTERS_START_Y, -4.5);
+      
       candle.visible = false;
       hasPrimedRef.current = true;
     }
@@ -139,8 +174,9 @@ function AnimatedScene({
     }
 
     const elapsed = clock.elapsedTime - animationStartRef.current;
-    const clampedElapsed = clamp(elapsed, 0, totalAnimationTime);
+    const clampedElapsed = clamp(elapsed, 0, TOTAL_ANIMATION_TIME);
 
+    // --- CAKE ANIMATION ---
     const cakeProgress = clamp(clampedElapsed / CAKE_DESCENT_DURATION, 0, 1);
     const cakeEase = easeOutCubic(cakeProgress);
     cake.position.y = lerp(CAKE_START_Y, CAKE_END_Y, cakeEase);
@@ -150,6 +186,7 @@ function AnimatedScene({
     cake.rotation.x = 0;
     cake.rotation.z = 0;
 
+    // --- TABLE ANIMATION ---
     let tableZ = TABLE_START_Z;
     if (clampedElapsed >= TABLE_SLIDE_START) {
       const tableProgress = clamp(
@@ -163,6 +200,23 @@ function AnimatedScene({
     table.position.set(0, 0, tableZ);
     table.rotation.set(0, 0, 0);
 
+    // --- BUTTERS ANIMATION ---
+    if (clampedElapsed >= BUTTERS_APPEAR_START) {
+      if (!voice.visible) voice.visible = true;
+
+      const buttersProgress = clamp(
+        (clampedElapsed - BUTTERS_APPEAR_START) / BUTTERS_APPEAR_DURATION,
+        0,
+        1
+      );
+      const buttersEase = easeOutCubic(buttersProgress);
+      const currentButtersY = lerp(BUTTERS_START_Y, BUTTERS_END_Y, buttersEase);
+      voice.position.set(-1.8, currentButtersY, -4.5);
+    } else {
+      voice.visible = false;
+    }
+
+    // --- CANDLE ANIMATION ---
     if (clampedElapsed >= CANDLE_DROP_START) {
       if (!candle.visible) {
         candle.visible = true;
@@ -179,6 +233,7 @@ function AnimatedScene({
       candle.position.set(0, CANDLE_START_Y, 0);
     }
 
+    // --- BACKGROUND FADE ---
     if (clampedElapsed < BACKGROUND_FADE_START) {
       emitBackgroundOpacity(1);
       emitEnvironmentProgress(0);
@@ -194,12 +249,18 @@ function AnimatedScene({
       emitEnvironmentProgress(1 - backgroundOpacity);
     }
 
-    const animationDone = clampedElapsed >= totalAnimationTime;
+    // --- CLEANUP ---
+    const animationDone = clampedElapsed >= TOTAL_ANIMATION_TIME;
     if (animationDone) {
       cake.position.set(0, CAKE_END_Y, 0);
       cake.rotation.set(0, 0, 0);
       table.position.set(0, 0, TABLE_END_Z);
       candle.position.set(0, CANDLE_END_Y, 0);
+      
+      // Ensure Butters is final
+      voice.position.set(-1.8, BUTTERS_END_Y, -4.5);
+      voice.visible = true;
+      
       candle.visible = true;
       emitBackgroundOpacity(0);
       emitEnvironmentProgress(1);
@@ -211,24 +272,23 @@ function AnimatedScene({
     }
   });
 
-
   return (
     <>
       <group ref={tableGroup}>
         <RomanticTable 
           position={[-3.4, -14.8, 0.2]}
           scale={6.5}
-          />
+        />
         <Chudette 
           position={[1.6, -1.4, 1.8]}
           rotation={[0, -3.4, 0]}
           scale={10}
-          />
+        />
         <Chud 
           position={[-0.8, -0.0099, -2.3]}
           rotation={[0,1.28, 0]}
           scale={1.9}
-          />
+        />
         <PictureFrame
           image="/frame2.jpg"
           position={[0, 0.735, 3]}
@@ -285,22 +345,22 @@ function AnimatedScene({
           scale={1.9}
         />
       </group>
+      
       <group ref={voiceGroup}
         onPointerDown={(e) => {
           e.stopPropagation();
           onButtersPress?.();
         }}
       >
-        
+        {/* Position set to 0,0,0 because the Group is moving */}
         <Butters
-          position={[-1.8, 1.9, -4.5]}
+          position={[0, 0, 0]}
           rotation={[0, -5.5, 0]}
           scale={2}
         />
       </group>
-      <group
-        ref={cakeGroup}
-      >
+
+      <group ref={cakeGroup}>
         <HeartCake 
           position={[-0.3, 0.6, 0]}
           rotation={[0, 0.7, 0]}
@@ -364,7 +424,6 @@ function EnvironmentBackgroundController({
 
   useEffect(() => {
     if ("backgroundIntensity" in scene) {
-      // Cast required because older typings might not include backgroundIntensity yet.
       (scene as typeof scene & { backgroundIntensity: number }).backgroundIntensity =
         intensity;
     }
@@ -372,7 +431,6 @@ function EnvironmentBackgroundController({
 
   return null;
 }
-
 
 export default function App() {
   const [hasStarted, setHasStarted] = useState(false);
@@ -411,7 +469,6 @@ export default function App() {
     }
 
     try {
-      // don’t always reset currentTime unless you want it to restart
       await audio.play();
     } catch {
       // browser might block until user gesture; ignore
@@ -482,7 +539,7 @@ export default function App() {
     audio.loop = false;
     audio.preload = "auto";
     void audio.play().catch(() => {
-      // ignore play errors (browser might block)
+      // ignore play errors
     });
   }, []);
 
@@ -543,27 +600,6 @@ export default function App() {
     return () => window.clearInterval(handle);
   }, []);
 
-  // useEffect(() => {
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     if (event.code !== "Space" && event.key !== " ") {
-  //       return;
-  //     }
-  //     event.preventDefault();
-  //     if (!hasStarted) {
-  //       playBackgroundMusic();
-  //       setHasStarted(true);
-  //       return;
-  //     }
-  //     if (hasAnimationCompleted && isCandleLit) {
-  //       setIsCandleLit(false);
-  //       setFireworksActive(true);
-  //     }
-  //   };
-
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   return () => window.removeEventListener("keydown", handleKeyDown);
-  // }, [hasStarted, hasAnimationCompleted, isCandleLit, playBackgroundMusic]);
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code !== "Space" && event.key !== " ") return;
@@ -586,20 +622,16 @@ export default function App() {
 
   useEffect(() => {
     const handlePointerStart = (event: Event) => {
-      // Only used for the "press space to start" part:
       if (hasStarted) return;
 
       const target = event.target as HTMLElement | null;
 
-      // Ignore taps on UI controls (like your Music toggle)
       if (target?.closest("button, a, input, textarea, select, [data-ignore-start]")) {
         return;
       }
 
       startExperience();
     };
-
-
 
     window.addEventListener("pointerdown", handlePointerStart);
     // fallback for older iOS edge cases

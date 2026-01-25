@@ -66,7 +66,7 @@ export type BirthdayCardConfig = {
   rotation: [number, number, number];
 };
 
-const BIRTHDAY_CARDS: ReadonlyArray<BirthdayCardConfig> = [
+export const BIRTHDAY_CARDS: ReadonlyArray<BirthdayCardConfig> = [
   {
     id: "confetti",
     image: "/mine.jpeg",
