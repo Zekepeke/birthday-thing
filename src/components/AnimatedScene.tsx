@@ -23,6 +23,7 @@ import Eric from "../models/Eric";
 import HelloKitty from "../models/HelloKitty";
 import Kuromi from "../models/Kuromi";
 import Chud from "../models/Chud";
+import Peonies from "../models/Peonies";
 
 type AnimatedSceneProps = {
   isPlaying: boolean;

@@ -1,11 +1,9 @@
 import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
-const Kuromi = (props: any) => {
+const Peonies = (props: any) => {
   const ref = useRef<any>(null);
   const { scene } = useGLTF("/peonies.glb");
-
-
 
   return (
     <group ref={ref} {...props}>
@@ -14,6 +12,6 @@ const Kuromi = (props: any) => {
   );
 };
 
-export default Kuromi;
+export default Peonies;
 
 useGLTF.preload("/peonies.glb");
