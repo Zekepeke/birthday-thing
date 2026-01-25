@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 
+// --- Existing Background Music Hook (unchanged) ---
 export function useAudio(url: string) {
   const [musicOn, setMusicOn] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -44,8 +45,30 @@ export function useAudio(url: string) {
   return { musicOn, toggleMusic, playMusic };
 }
 
-export function playOneShot(url: string) {
-  const audio = new Audio(url);
-  audio.loop = false;
-  void audio.play().catch(() => {});
+export function useSound(url: string, volume = 1.0) {
+  const soundRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const audio = new Audio(url);
+    audio.loop = false;
+    audio.volume = volume;
+    soundRef.current = audio;
+
+    return () => {
+      // Cleanup: stop playing if the component unmounts
+      audio.pause();
+      soundRef.current = null;
+    };
+  }, [url, volume]);
+
+  const play = useCallback(() => {
+    const audio = soundRef.current;
+    if (audio) {
+      // Reset time to 0 so we can click repeatedly (restart effect)
+      audio.currentTime = 0; 
+      audio.play().catch((e) => console.warn("Sound play failed", e));
+    }
+  }, []);
+
+  return play;
 }

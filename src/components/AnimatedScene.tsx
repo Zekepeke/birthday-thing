@@ -37,6 +37,7 @@ type AnimatedSceneProps = {
   onToggleCard: (id: string) => void;
   onCandlePress?: () => void;
   onButtersPress?: () => void;
+  onTysonPress?: () => void;
   fireworksActive: boolean;
 };
 
@@ -98,6 +99,7 @@ export function AnimatedScene({
   onCandlePress,
   onButtersPress,
   fireworksActive,
+  onTysonPress
 }: AnimatedSceneProps) {
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
