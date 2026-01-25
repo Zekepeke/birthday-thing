@@ -161,6 +161,7 @@ function AnimatedScene({
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
   const candleGroup = useRef<Group>(null);
+  const voiceGroup = useRef<Group>(null);
   const animationStartRef = useRef<number | null>(null);
   const hasPrimedRef = useRef(false);
   const hasCompletedRef = useRef(false);
