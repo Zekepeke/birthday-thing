@@ -10,7 +10,6 @@ export default function App() {
   const [hasStarted, setHasStarted] = useState(false);
   const [sceneStarted, setSceneStarted] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(1);
-  const [environmentProgress, setEnvironmentProgress] = useState(0);
   const [hasAnimationCompleted, setHasAnimationCompleted] = useState(false);
   const [isCandleLit, setIsCandleLit] = useState(true);
   const [fireworksActive, setFireworksActive] = useState(false);
@@ -81,13 +80,12 @@ export default function App() {
             candleLit={isCandleLit}
             fireworksActive={fireworksActive}
             onBackgroundFadeChange={setBackgroundOpacity}
-            onEnvironmentProgressChange={setEnvironmentProgress}
             onAnimationComplete={() => setHasAnimationCompleted(true)}
             cards={BIRTHDAY_CARDS}
             activeCardId={activeCardId}
             onToggleCard={(id) => setActiveCardId((prev) => (prev === id ? null : id))}
             onCandlePress={blowOutCandle}
-            onButtersPress={() => playOneShot("/butters_voice.wav")}
+            onButtersPress={() => playOneShot("/butters_voice.mp3")}
           />
         </Suspense>
       </Canvas>
