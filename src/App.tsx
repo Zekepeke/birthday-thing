@@ -10,7 +10,7 @@ export default function App() {
   const [hasStarted, setHasStarted] = useState(false);
   const [sceneStarted, setSceneStarted] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(1);
-  const [setEnvironmentProgress] = useState(0);
+  const [environmentProgress, setEnvironmentProgress] = useState(0);
   const [hasAnimationCompleted, setHasAnimationCompleted] = useState(false);
   const [isCandleLit, setIsCandleLit] = useState(true);
   const [fireworksActive, setFireworksActive] = useState(false);
