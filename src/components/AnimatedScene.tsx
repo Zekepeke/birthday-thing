@@ -24,6 +24,7 @@ import HelloKitty from "../models/HelloKitty";
 import Kuromi from "../models/Kuromi";
 import Chud from "../models/Chud";
 import Peonies from "../models/Peonies";
+import { useControls } from "leva";
 
 type AnimatedSceneProps = {
   isPlaying: boolean;
@@ -225,6 +226,7 @@ export function AnimatedScene({
     }
   });
 
+
   return (
     <>
       <ambientLight intensity={(1 - environmentProgressRef.current) * 0.8} />
@@ -263,7 +265,8 @@ export function AnimatedScene({
         <Eric position={[-4.2, 1.9, -2.9]} rotation={[0, -5.2, 0]} scale={2} />
         <HelloKitty position={[-3.2, 2.4, 4.8]} rotation={[0, 2.41, 0]} scale={2.4} />
         <Kuromi position={[-6.5, 2.4, 2.4]} rotation={[0, 2, 0]} scale={2.6} />
-        <Zuki position={[-2.8, 1.4, 2.3]} rotation={[0, -4.2, 0]} scale={1.9} />
+        <Zuki position={[-2.8, 1.4, 2.5]} rotation={[0, -4.2, 0]} scale={1.9} />
+        <Peonies position={[-0.9, 0.7, 4.6]} rotation={[0, 5, 0]} scale={5.3} />
       </group>
 
       <group ref={voiceGroup} onPointerDown={(e) => { e.stopPropagation(); onButtersPress?.(); }}>
