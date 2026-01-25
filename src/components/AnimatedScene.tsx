@@ -269,10 +269,9 @@ export function AnimatedScene({
         <Kuromi position={[-6.5, 2.4, 2.4]} rotation={[0, 2, 0]} scale={2.6} />
         <Zuki position={[-2.8, 1.4, 2.5]} rotation={[0, -4.2, 0]} scale={1.9} />
         <Peonies position={[-0.9, 0.7, 4.6]} rotation={[0, 5, 0]} scale={5.3} />
-        <Tyson position={[-9.5, 0.6, -1.2]}
-          rotation={[0, 2.3, 0]}
-          scale={8.1}
-        />
+        <group onPointerDown={(e) => { e.stopPropagation(); onTysonPress?.(); }}>
+           <Tyson position={[-9.5, 0.6, -1.2]} rotation={[0, 2.3, 0]} scale={8.1} />
+        </group>
       </group>
 
       <group ref={voiceGroup} onPointerDown={(e) => { e.stopPropagation(); onButtersPress?.(); }}>

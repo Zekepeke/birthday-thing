@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { AnimatedScene } from "./components/AnimatedScene";
 import { TypingOverlay } from "./components/TypingOverlay";
-import { useAudio, playOneShot } from "./hooks/useAudio";
+import { useAudio, useSound } from "./hooks/useAudio";
 import { BIRTHDAY_CARDS } from "./constants";
 import "./App.css";
 
@@ -17,6 +17,8 @@ export default function App() {
 
   // Custom Hook for Music
   const { musicOn, toggleMusic, playMusic } = useAudio("/in_da_club.mp3");
+  const playTyson = useSound("/tyson.mp3"); 
+  const playButters = useSound("/butters_voice.mp3");
 
   const startExperience = useCallback(() => {
     if (hasStarted) return;
@@ -85,7 +87,8 @@ export default function App() {
             activeCardId={activeCardId}
             onToggleCard={(id) => setActiveCardId((prev) => (prev === id ? null : id))}
             onCandlePress={blowOutCandle}
-            onButtersPress={() => playOneShot("/butters_voice.mp3")}
+            onButtersPress={playButters}
+            onTysonPress={playTyson}
           />
         </Suspense>
       </Canvas>
