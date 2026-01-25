@@ -1,4 +1,3 @@
-// src/App.tsx
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { AnimatedScene } from "./components/AnimatedScene";
