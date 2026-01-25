@@ -196,8 +196,9 @@ function AnimatedScene({
     const cake = cakeGroup.current;
     const table = tableGroup.current;
     const candle = candleGroup.current;
+    const voice = voiceGroup.current;
 
-    if (!cake || !table || !candle) {
+    if (!cake || !table || !candle || !voice) {
       return;
     }
 
@@ -207,6 +208,7 @@ function AnimatedScene({
       table.position.set(0, 0, TABLE_START_Z);
       table.rotation.set(0, 0, 0);
       candle.position.set(0, CANDLE_START_Y, 0);
+      voice.position.set(-1.8, 1.9, -4.5);
       candle.visible = false;
       hasPrimedRef.current = true;
     }
