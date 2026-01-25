@@ -104,7 +104,6 @@ export function AnimatedScene({
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
   const candleGroup = useRef<Group>(null);
-  const voiceGroup = useRef<Group>(null);
   const animationStartRef = useRef<number | null>(null);
   const hasPrimedRef = useRef(false);
   const hasCompletedRef = useRef(false);
@@ -137,16 +136,13 @@ export function AnimatedScene({
     const cake = cakeGroup.current;
     const table = tableGroup.current;
     const candle = candleGroup.current;
-    const voice = voiceGroup.current;
 
-    if (!cake || !table || !candle || !voice) return;
+    if (!cake || !table || !candle) return;
 
     if (!hasPrimedRef.current) {
       cake.position.set(0, C.CAKE_START_Y, 0);
       table.position.set(0, 0, C.TABLE_START_Z);
       candle.position.set(0, C.CANDLE_START_Y, 0);
-      voice.visible = false;
-      voice.position.set(-1.8, C.BUTTERS_START_Y, -4.5);
       candle.visible = false;
       hasPrimedRef.current = true;
     }
@@ -191,15 +187,6 @@ export function AnimatedScene({
     }
     table.position.z = tableZ;
 
-    // Butters
-    if (clampedElapsed >= C.BUTTERS_APPEAR_START) {
-      if (!voice.visible) voice.visible = true;
-      const buttersProgress = clamp((clampedElapsed - C.BUTTERS_APPEAR_START) / C.BUTTERS_APPEAR_DURATION, 0, 1);
-      voice.position.y = lerp(C.BUTTERS_START_Y, C.BUTTERS_END_Y, easeOutCubic(buttersProgress));
-    } else {
-      voice.visible = false;
-    }
-
     // Candle
     if (clampedElapsed >= C.CANDLE_DROP_START) {
       if (!candle.visible) candle.visible = true;
@@ -221,8 +208,6 @@ export function AnimatedScene({
       cake.position.set(0, C.CAKE_END_Y, 0);
       table.position.set(0, 0, C.TABLE_END_Z);
       candle.position.set(0, C.CANDLE_END_Y, 0);
-      voice.position.set(-1.8, C.BUTTERS_END_Y, -4.5);
-      voice.visible = true;
       candle.visible = true;
       hasCompletedRef.current = true;
     }
@@ -272,10 +257,9 @@ export function AnimatedScene({
         <group onPointerDown={(e) => { e.stopPropagation(); onTysonPress?.(); }}>
            <Tyson position={[-9.5, 0.6, -1.2]} rotation={[0, 2.3, 0]} scale={8.1} />
         </group>
-      </group>
-
-      <group ref={voiceGroup} onPointerDown={(e) => { e.stopPropagation(); onButtersPress?.(); }}>
-        <Butters position={[0, 0, 0]} rotation={[0, -5.5, 0]} scale={2} />
+        <group onPointerDown={(e) => { e.stopPropagation(); onButtersPress?.(); }}>
+          <Butters position={[-1.8, 2, -4.5]} rotation={[0, -5.5, 0]} scale={2} />
+        </group>
       </group>
 
       <group ref={cakeGroup}>
