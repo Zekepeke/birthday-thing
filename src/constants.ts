@@ -5,11 +5,6 @@ export const CAKE_START_Y = 10;
 export const CAKE_END_Y = 0;
 export const CAKE_DESCENT_DURATION = 3;
 
-export const BUTTERS_START_Y = 8;
-export const BUTTERS_END_Y = 1.9;
-export const BUTTERS_APPEAR_START = CAKE_DESCENT_DURATION;
-export const BUTTERS_APPEAR_DURATION = 0.8;
-
 export const TABLE_START_Z = 30;
 export const TABLE_END_Z = 0;
 export const TABLE_SLIDE_DURATION = 0.7;
@@ -17,7 +12,7 @@ export const TABLE_SLIDE_START = CAKE_DESCENT_DURATION - TABLE_SLIDE_DURATION - 
 
 export const CANDLE_START_Y = 5;
 export const CANDLE_END_Y = 0;
-export const CANDLE_DROP_DURATION = 1.2;
+export const CANDLE_DROP_DURATION = 1.1;
 export const CANDLE_DROP_START =
   Math.max(CAKE_DESCENT_DURATION, TABLE_SLIDE_START + TABLE_SLIDE_DURATION) + 1.0;
 
