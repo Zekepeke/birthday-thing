@@ -45,7 +45,7 @@ export const TYPED_LINES = [
   "...",
   "> today is your birthday",
   "...",
-  "> so i made you something special",
+  "> so i made you something special!",
   "...",
   "˚ʚ♡ɞ˚ ˚ʚ♡ɞ˚ ˚ʚ♡ɞ˚ ˚ʚ♡ɞ˚",
 ];

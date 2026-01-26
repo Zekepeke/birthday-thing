@@ -45,7 +45,7 @@ export function useAudio(url: string) {
   return { musicOn, toggleMusic, playMusic };
 }
 
-export function useSound(url: string, volume = 1.0) {
+export function useSound(url: string, volume = 1) {
   const soundRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
