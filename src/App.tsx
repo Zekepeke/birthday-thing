@@ -16,7 +16,7 @@ export default function App() {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
 
   // Custom Hook for Music
-  const { musicOn, toggleMusic, playMusic } = useAudio("/Piel Canela.mp3");
+  const { musicOn, toggleMusic, playMusic } = useAudio("/Piel_Canela.mp3");
   const playTyson = useSound("/tyson.mp3"); 
   const playButters = useSound("/butters_voice.mp3");
 
