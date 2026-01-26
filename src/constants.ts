@@ -43,7 +43,7 @@ export const ORBIT_MAX_POLAR = Math.PI / 2;
 export const TYPED_LINES = [
   "> Amanda",
   "...",
-  "> today is your birthday",
+  "> today is your birthday!!!",
   "...",
   "> so i made you something special!",
   "...",
