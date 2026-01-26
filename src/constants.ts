@@ -97,5 +97,11 @@ export const BIRTHDAY_CARDS: ReadonlyArray<BirthdayCardConfig> = [
     image: "/marriah.JPG",
     position: [0.9, 0.095, -2.19],
     rotation: [-Math.PI / 2 , 0, 2.5],
-  }
+  },
+  {
+    id: "smile",
+    image: "/mine2.jpg",
+    position: [-6, 0.23, -1.1],
+    rotation: [-Math.PI / 2 , 0, 6],
+  },
 ];
