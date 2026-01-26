@@ -38,6 +38,8 @@ type AnimatedSceneProps = {
   onCandlePress?: () => void;
   onButtersPress?: () => void;
   onTysonPress?: () => void;
+  onZukiPress?: () => void;
+  onEricPress?: () => void;
   fireworksActive: boolean;
 };
 
@@ -99,7 +101,9 @@ export function AnimatedScene({
   onCandlePress,
   onButtersPress,
   fireworksActive,
-  onTysonPress
+  onTysonPress,
+  onZukiPress,
+  onEricPress
 }: AnimatedSceneProps) {
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
@@ -249,10 +253,14 @@ export function AnimatedScene({
             onToggle={onToggleCard}
           />
         ))}
-        <Eric position={[-4.2, 1.9, -2.9]} rotation={[0, -5.2, 0]} scale={2} />
+        <group onPointerDown={(e) => { e.stopPropagation(); onEricPress?.(); }}>
+          <Eric position={[-4.2, 1.9, -2.9]} rotation={[0, -5.2, 0]} scale={2} />
+        </group>
         <HelloKitty position={[-3.2, 2.4, 4.8]} rotation={[0, 2.41, 0]} scale={2.4} />
         <Kuromi position={[-6.5, 2.4, 2.4]} rotation={[0, 2, 0]} scale={2.6} />
-        <Zuki position={[-2.8, 1.4, 2.5]} rotation={[0, -4.2, 0]} scale={1.9} />
+        <group onPointerDown={(e) => { e.stopPropagation(); onZukiPress?.(); }}>
+          <Zuki position={[-2.8, 1.4, 2.5]} rotation={[0, -4.2, 0]} scale={1.9} />
+        </group>
         <Peonies position={[-0.9, 0.7, 4.6]} rotation={[0, 5, 0]} scale={5.3} />
         <group onPointerDown={(e) => { e.stopPropagation(); onTysonPress?.(); }}>
            <Tyson position={[-9.5, 0.6, -1.2]} rotation={[0, 2.3, 0]} scale={8.1} />

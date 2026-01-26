@@ -19,6 +19,8 @@ export default function App() {
   const { musicOn, toggleMusic, playMusic } = useAudio("/Piel_Canela.mp3");
   const playTyson = useSound("/tyson.mp3"); 
   const playButters = useSound("/butters_voice.mp3");
+  const playZuki = useSound("/zuki_sound.mp3");
+  const playEric = useSound("/eric.mp3");
 
   const startExperience = useCallback(() => {
     if (hasStarted) return;
@@ -89,6 +91,8 @@ export default function App() {
             onCandlePress={blowOutCandle}
             onButtersPress={playButters}
             onTysonPress={playTyson}
+            onZukiPress={playZuki}
+            onEricPress={playEric}
           />
         </Suspense>
       </Canvas>
