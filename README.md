@@ -1,5 +1,5 @@
 # Happy Birthday Amanda
-big project
+really big project
 
 ```
 npm install
