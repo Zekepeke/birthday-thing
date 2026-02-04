@@ -23,9 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Custom
-
-public/*.jpg
-public/*.jpeg
-public/*.JPG
-public/*.mp3
+# This covers .jpg, .JPG, .jpeg, etc.
+public/*.[jJ][pP][gG]
+public/*.[jJ][pP][eE][gG]
