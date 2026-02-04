@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Custom
+
+public/*.jpg
+public/*.jpeg
+public/*.JPG
+public/*.mp3
