@@ -1,4 +1,4 @@
-# Happy Birthday Amanda
+# Happy Birthday
 really big project
 
 ```
